@@ -75,8 +75,9 @@ namespace lmsextreg.Pages.Account
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(Input.Email, callbackUrl);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(Url.GetLocalUrl(returnUrl));
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    //return LocalRedirect(Url.GetLocalUrl(returnUrl));
+                    return RedirectToPage("./RegisterConfirmation");
                 }
                 foreach (var error in result.Errors)
                 {
