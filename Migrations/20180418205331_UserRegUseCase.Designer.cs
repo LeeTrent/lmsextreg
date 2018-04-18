@@ -11,9 +11,10 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180418205331_UserRegUseCase")]
+    partial class UserRegUseCase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,20 +85,6 @@ namespace lmsextreg.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("lmsextreg.Models.Agency", b =>
-                {
-                    b.Property<int>("AgencyID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AgencyCode");
-
-                    b.Property<string>("AgencyName");
-
-                    b.HasKey("AgencyID");
-
-                    b.ToTable("Agency");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
