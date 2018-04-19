@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180417143707_InitialDatabase")]
+    [Migration("20180419163513_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,17 +28,29 @@ namespace lmsextreg.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<int>("AgencyID");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<DateTime>("DateExpired");
+
+                    b.Property<DateTime>("DateRegistered");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("MiddleName");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -53,6 +65,10 @@ namespace lmsextreg.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<string>("SupervisorEmail");
+
+                    b.Property<string>("Title");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -69,6 +85,20 @@ namespace lmsextreg.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.Agency", b =>
+                {
+                    b.Property<int>("AgencyID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AgencyCode");
+
+                    b.Property<string>("AgencyName");
+
+                    b.HasKey("AgencyID");
+
+                    b.ToTable("Agency");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
