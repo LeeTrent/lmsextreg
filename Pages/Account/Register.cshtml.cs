@@ -53,6 +53,21 @@ namespace lmsextreg.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Middle Name")]
+            public string MiddleName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "Job Title")]
+            public string Title { get; set; }            
         }
 
         public void OnGet(string returnUrl = null)
@@ -65,7 +80,18 @@ namespace lmsextreg.Pages.Account
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                //var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+
+                var user = new ApplicationUser
+                { 
+                    UserName    = Input.Email, 
+                    Email       = Input.Email,
+                    FirstName   = Input.FirstName,
+                    MiddleName  = Input.MiddleName,
+                    LastName    = Input.LastName,
+                    Title       = Input.Title 
+                };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
