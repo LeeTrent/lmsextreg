@@ -1,6 +1,6 @@
 ---
 applications:
-- name: lmsextreg2
+- name: lmsextreg
   buildpack: dotnet_core_buildpack
   memory: 512M
   env:
@@ -8,4 +8,4 @@ applications:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     ASPNETCORE_ENVIRONMENT: Development
 services:
- - lmsextreg2db
+ - lmsextregdb
