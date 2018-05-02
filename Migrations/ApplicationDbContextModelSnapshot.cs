@@ -43,6 +43,8 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("FirstName");
 
+                    b.Property<string>("JobTitle");
+
                     b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
@@ -63,11 +65,9 @@ namespace lmsextreg.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<string>("PostalCode");
+
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("SupervisorEmail");
-
-                    b.Property<string>("Title");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -75,6 +75,8 @@ namespace lmsextreg.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgencyID");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -205,6 +207,14 @@ namespace lmsextreg.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("lmsextreg.Data.ApplicationUser", b =>
+                {
+                    b.HasOne("lmsextreg.Models.Agency", "Agency")
+                        .WithMany()
+                        .HasForeignKey("AgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

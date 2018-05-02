@@ -50,6 +50,7 @@ namespace lmsextreg.Migrations
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
+                    JobTitle = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
@@ -59,15 +60,20 @@ namespace lmsextreg.Migrations
                     PasswordHash = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    PostalCode = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
-                    SupervisorEmail = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Agency_AgencyID",
+                        column: x => x.AgencyID,
+                        principalTable: "Agency",
+                        principalColumn: "AgencyID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,6 +209,11 @@ namespace lmsextreg.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_AgencyID",
+                table: "AspNetUsers",
+                column: "AgencyID");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -216,9 +227,6 @@ namespace lmsextreg.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Agency");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -239,6 +247,9 @@ namespace lmsextreg.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Agency");
         }
     }
 }

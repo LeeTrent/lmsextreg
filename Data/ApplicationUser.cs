@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using lmsextreg.Models;
 
 namespace lmsextreg.Data
 {
@@ -12,10 +13,14 @@ namespace lmsextreg.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
-        public string Title { get; set; }
+        public string JobTitle { get; set; }
+        public string PostalCode { get; set; }
         public int AgencyID { get; set; }
-        public string SupervisorEmail { get; set; }
+        public Agency Agency { get; set; }
+        // public int CountryID { get; set; }
+        // public Country Country { get; set; }
         public DateTime DateRegistered { get; set; }
         public DateTime DateExpired { get; set; }
+
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Services;
@@ -18,22 +19,27 @@ namespace lmsextreg.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _dbContext;
 
-        public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<LoginModel> logger,
-            IEmailSender emailSender)
+        public RegisterModel
+            (
+                UserManager<ApplicationUser> userManager,
+                SignInManager<ApplicationUser> signInManager,
+                ILogger<LoginModel> logger,
+                IEmailSender emailSender,
+                ApplicationDbContext dbContext
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _dbContext = dbContext;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
-
+        public SelectList AgencySelectList { get; set; }
         public string ReturnUrl { get; set; }
 
         public class InputModel
@@ -67,11 +73,16 @@ namespace lmsextreg.Pages.Account
 
             [Required]
             [Display(Name = "Job Title")]
-            public string Title { get; set; }            
+            public string JobTitle { get; set; }   
+
+            [Required]
+            [Display(Name = "Sponsoring Agency")]  
+            public int AgencyID { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
         {
+            AgencySelectList = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
             ReturnUrl = returnUrl;
         }
 
@@ -89,7 +100,8 @@ namespace lmsextreg.Pages.Account
                     FirstName   = Input.FirstName,
                     MiddleName  = Input.MiddleName,
                     LastName    = Input.LastName,
-                    Title       = Input.Title 
+                    JobTitle    = Input.JobTitle,
+                    AgencyID    = Input.AgencyID   
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
