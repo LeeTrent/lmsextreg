@@ -50,7 +50,9 @@
             <div class="form-group">
                 <label asp-for="Input.AgencyID"></label>
                 <select asp-for="Input.AgencyID" class="form-control"
-                        asp-items="@Model.AgencySelectList"></select>
+                        asp-items="@Model.AgencySelectList">
+                    <option value="">-- Select Agency --</option>
+                </select>
                 <span asp-validation-for="Input.AgencyID" class="text-danger">
                 </span>
             </div>         
