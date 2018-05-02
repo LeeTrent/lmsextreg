@@ -16,6 +16,7 @@ namespace lmsextreg.Data
         }
 
         public DbSet<Agency> Agencies { get; set; }
+        public DbSet<Country> Countries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -24,6 +25,7 @@ namespace lmsextreg.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Agency>().ToTable("Agency");
+            builder.Entity<Country>().ToTable("Country");
         }
     }
 }

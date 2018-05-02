@@ -32,6 +32,8 @@ namespace lmsextreg.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<int>("CountryID");
+
                     b.Property<DateTime>("DateExpired");
 
                     b.Property<DateTime>("DateRegistered");
@@ -78,6 +80,8 @@ namespace lmsextreg.Migrations
 
                     b.HasIndex("AgencyID");
 
+                    b.HasIndex("CountryID");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -100,6 +104,20 @@ namespace lmsextreg.Migrations
                     b.HasKey("AgencyID");
 
                     b.ToTable("Agency");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.Country", b =>
+                {
+                    b.Property<int>("CountryID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CountryCode");
+
+                    b.Property<string>("CountryName");
+
+                    b.HasKey("CountryID");
+
+                    b.ToTable("Country");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -214,6 +232,11 @@ namespace lmsextreg.Migrations
                     b.HasOne("lmsextreg.Models.Agency", "Agency")
                         .WithMany()
                         .HasForeignKey("AgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

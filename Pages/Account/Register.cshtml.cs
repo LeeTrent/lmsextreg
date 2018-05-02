@@ -40,6 +40,7 @@ namespace lmsextreg.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
         public SelectList AgencySelectList { get; set; }
+        public SelectList CountrySelectList { get; set; }
         public string ReturnUrl { get; set; }
 
         public class InputModel
@@ -78,12 +79,21 @@ namespace lmsextreg.Pages.Account
             [Required]
             [Display(Name = "Sponsoring Agency")]  
             public int AgencyID { get; set; }
+
+            [Required]
+            [Display(Name = "Country")]  
+            public int CountryID { get; set; }
+
+            [Required]
+            [Display(Name = "Postal Code")]
+            public string PostalCode { get; set; }     
         }
 
         public void OnGet(string returnUrl = null)
         {
-            AgencySelectList = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
-            ReturnUrl = returnUrl;
+            AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
+            CountrySelectList   = new SelectList(_dbContext.Countries, "CountryID", "CountryName");
+            ReturnUrl           = returnUrl;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -101,7 +111,9 @@ namespace lmsextreg.Pages.Account
                     MiddleName  = Input.MiddleName,
                     LastName    = Input.LastName,
                     JobTitle    = Input.JobTitle,
-                    AgencyID    = Input.AgencyID   
+                    AgencyID    = Input.AgencyID,
+                    CountryID   = Input.CountryID,
+                    PostalCode  = Input.PostalCode
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
