@@ -105,15 +105,17 @@ namespace lmsextreg.Pages.Account
 
                 var user = new ApplicationUser
                 { 
-                    UserName    = Input.Email, 
-                    Email       = Input.Email,
-                    FirstName   = Input.FirstName,
-                    MiddleName  = Input.MiddleName,
-                    LastName    = Input.LastName,
-                    JobTitle    = Input.JobTitle,
-                    AgencyID    = Input.AgencyID,
-                    CountryID   = Input.CountryID,
-                    PostalCode  = Input.PostalCode
+                    UserName        = Input.Email, 
+                    Email           = Input.Email,
+                    FirstName       = Input.FirstName,
+                    MiddleName      = Input.MiddleName,
+                    LastName        = Input.LastName,
+                    JobTitle        = Input.JobTitle,
+                    AgencyID        = Input.AgencyID,
+                    CountryID       = Input.CountryID,
+                    PostalCode      = Input.PostalCode,
+                    DateRegistered  = DateTime.Now,
+                    DateExpired     = DateTime.Now.AddDays(365)
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
