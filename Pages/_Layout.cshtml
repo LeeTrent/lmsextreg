@@ -1,3 +1,4 @@
+@inject SignInManager<ApplicationUser> SignInManager
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,6 +32,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-page="/Index">Home</a></li>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Learner") )
+                    {
+                        <li><a asp-page="/Index">My Programs</a></li>
+                    }
                     <li><a asp-page="/About">About</a></li>
                     <li><a asp-page="/Contact">Contact</a></li>
                 </ul>

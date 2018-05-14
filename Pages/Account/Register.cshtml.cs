@@ -20,6 +20,7 @@ namespace lmsextreg.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _dbContext;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel
             (
@@ -27,7 +28,9 @@ namespace lmsextreg.Pages.Account
                 SignInManager<ApplicationUser> signInManager,
                 ILogger<LoginModel> logger,
                 IEmailSender emailSender,
-                ApplicationDbContext dbContext
+                ApplicationDbContext dbContext,
+                RoleManager<IdentityRole> roleManager
+
             )
         {
             _userManager = userManager;
@@ -35,6 +38,7 @@ namespace lmsextreg.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _dbContext = dbContext;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -118,7 +122,21 @@ namespace lmsextreg.Pages.Account
                     DateExpired     = DateTime.Now.AddDays(365)
                 };
 
+                // Create User
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                if (result.Succeeded)
+                {
+                    if ( !await _roleManager.RoleExistsAsync("Learner") )
+                    {
+                        // Create Role
+                        result = await _roleManager.CreateAsync(new IdentityRole("Learner"));
+                    }
+                    if (result.Succeeded)
+                    {
+                        // Create User Role 
+                        result = await _userManager.AddToRoleAsync(user, "Learner");
+                    }
+                }    
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
