@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Services;
+using lmsextreg.Models;
 
 namespace lmsextreg.Pages.Account
 {
@@ -44,7 +46,7 @@ namespace lmsextreg.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
         public SelectList AgencySelectList { get; set; }
-        public SelectList CountrySelectList { get; set; }
+        public SelectList SubAgencySelectList { get; set; }
         public string ReturnUrl { get; set; }
 
         public class InputModel
@@ -81,13 +83,18 @@ namespace lmsextreg.Pages.Account
             public string JobTitle { get; set; }   
 
             [Required]
-            [Display(Name = "Sponsoring Agency")]  
-            public int AgencyID { get; set; }
+            [Display(Name = "Agency")]  
+            public string AgencyID { get; set; }
+
+            [Required]
+            [Display(Name = "SubAgency")]  
+            public string SubAgencyID { get; set; }            
         }
 
         public void OnGet(string returnUrl = null)
         {
             AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
+            SubAgencySelectList = new SelectList(_dbContext.SubAgencies, "SubAgencyID", "SubAgencyName");
             ReturnUrl           = returnUrl;
         }
 
@@ -107,6 +114,7 @@ namespace lmsextreg.Pages.Account
                     LastName        = Input.LastName,
                     JobTitle        = Input.JobTitle,
                     AgencyID        = Input.AgencyID,
+                    SubAgencyID     = Input.SubAgencyID,
                     DateRegistered  = DateTime.Now,
                     DateExpired     = DateTime.Now.AddDays(365)
                 };
@@ -147,5 +155,11 @@ namespace lmsextreg.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+       public JsonResult OnGetCountiesInContinent(string agencyID) 
+        {
+            List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agencyID ).ToList();
+            return new JsonResult(new SelectList(subAgencyList, "SubAgencyID", "SubAgencyName"));
+        }         
     }
 }

@@ -14,8 +14,10 @@ namespace lmsextreg.Data
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string JobTitle { get; set; }   
-        public int AgencyID { get; set; }
+        public string AgencyID { get; set; }
         public Agency Agency { get; set; }
+        public string SubAgencyID { get; set; }
+        public SubAgency SubAgency { get; set; }
         public DateTime DateRegistered { get; set; }
         public DateTime DateExpired { get; set; }
 

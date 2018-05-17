@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180517201855_InitialDatabase")]
+    [Migration("20180517210855_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace lmsextreg.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<int>("AgencyID");
+                    b.Property<string>("AgencyID");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -68,6 +68,8 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<string>("SubAgencyID");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -84,21 +86,47 @@ namespace lmsextreg.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex");
 
+                    b.HasIndex("SubAgencyID");
+
                     b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("lmsextreg.Models.Agency", b =>
                 {
-                    b.Property<int>("AgencyID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AgencyCode");
+                    b.Property<string>("AgencyID");
 
                     b.Property<string>("AgencyName");
+
+                    b.Property<int>("DisplayOrder");
+
+                    b.Property<string>("OPMCode");
+
+                    b.Property<string>("TreasuryCode");
 
                     b.HasKey("AgencyID");
 
                     b.ToTable("Agency");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.SubAgency", b =>
+                {
+                    b.Property<string>("SubAgencyID");
+
+                    b.Property<string>("AgencyID");
+
+                    b.Property<int>("DisplayOrder");
+
+                    b.Property<string>("OPMCode");
+
+                    b.Property<string>("SubAgencyName");
+
+                    b.Property<string>("TreasuryCode");
+
+                    b.HasKey("SubAgencyID");
+
+                    b.HasIndex("AgencyID");
+
+                    b.ToTable("SubAgency");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -212,8 +240,18 @@ namespace lmsextreg.Migrations
                 {
                     b.HasOne("lmsextreg.Models.Agency", "Agency")
                         .WithMany()
-                        .HasForeignKey("AgencyID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AgencyID");
+
+                    b.HasOne("lmsextreg.Models.SubAgency", "SubAgency")
+                        .WithMany()
+                        .HasForeignKey("SubAgencyID");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.SubAgency", b =>
+                {
+                    b.HasOne("lmsextreg.Models.Agency", "Agency")
+                        .WithMany("SubAgencies")
+                        .HasForeignKey("AgencyID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

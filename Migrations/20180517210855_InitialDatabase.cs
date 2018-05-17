@@ -13,10 +13,11 @@ namespace lmsextreg.Migrations
                 name: "Agency",
                 columns: table => new
                 {
-                    AgencyID = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    AgencyCode = table.Column<string>(nullable: true),
-                    AgencyName = table.Column<string>(nullable: true)
+                    AgencyID = table.Column<string>(nullable: false),
+                    AgencyName = table.Column<string>(nullable: true),
+                    DisplayOrder = table.Column<int>(nullable: false),
+                    OPMCode = table.Column<string>(nullable: true),
+                    TreasuryCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,41 +39,25 @@ namespace lmsextreg.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "SubAgency",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    AgencyID = table.Column<int>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    DateExpired = table.Column<DateTime>(nullable: false),
-                    DateRegistered = table.Column<DateTime>(nullable: false),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    JobTitle = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    MiddleName = table.Column<string>(nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                    SubAgencyID = table.Column<string>(nullable: false),
+                    AgencyID = table.Column<string>(nullable: true),
+                    DisplayOrder = table.Column<int>(nullable: false),
+                    OPMCode = table.Column<string>(nullable: true),
+                    SubAgencyName = table.Column<string>(nullable: true),
+                    TreasuryCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_SubAgency", x => x.SubAgencyID);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Agency_AgencyID",
+                        name: "FK_SubAgency_Agency_AgencyID",
                         column: x => x.AgencyID,
                         principalTable: "Agency",
                         principalColumn: "AgencyID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,6 +79,51 @@ namespace lmsextreg.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    AgencyID = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    DateExpired = table.Column<DateTime>(nullable: false),
+                    DateRegistered = table.Column<DateTime>(nullable: false),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    JobTitle = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    MiddleName = table.Column<string>(nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    SubAgencyID = table.Column<string>(nullable: true),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Agency_AgencyID",
+                        column: x => x.AgencyID,
+                        principalTable: "Agency",
+                        principalColumn: "AgencyID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_SubAgency_SubAgencyID",
+                        column: x => x.SubAgencyID,
+                        principalTable: "SubAgency",
+                        principalColumn: "SubAgencyID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,6 +252,16 @@ namespace lmsextreg.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_SubAgencyID",
+                table: "AspNetUsers",
+                column: "SubAgencyID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubAgency_AgencyID",
+                table: "SubAgency",
+                column: "AgencyID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -246,6 +286,9 @@ namespace lmsextreg.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "SubAgency");
 
             migrationBuilder.DropTable(
                 name: "Agency");
