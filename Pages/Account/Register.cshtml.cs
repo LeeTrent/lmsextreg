@@ -83,20 +83,11 @@ namespace lmsextreg.Pages.Account
             [Required]
             [Display(Name = "Sponsoring Agency")]  
             public int AgencyID { get; set; }
-
-            [Required]
-            [Display(Name = "Country")]  
-            public int CountryID { get; set; }
-
-            [Required]
-            [Display(Name = "Postal Code")]
-            public string PostalCode { get; set; }     
         }
 
         public void OnGet(string returnUrl = null)
         {
             AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
-            CountrySelectList   = new SelectList(_dbContext.Countries, "CountryID", "CountryName");
             ReturnUrl           = returnUrl;
         }
 
@@ -116,8 +107,6 @@ namespace lmsextreg.Pages.Account
                     LastName        = Input.LastName,
                     JobTitle        = Input.JobTitle,
                     AgencyID        = Input.AgencyID,
-                    CountryID       = Input.CountryID,
-                    PostalCode      = Input.PostalCode,
                     DateRegistered  = DateTime.Now,
                     DateExpired     = DateTime.Now.AddDays(365)
                 };

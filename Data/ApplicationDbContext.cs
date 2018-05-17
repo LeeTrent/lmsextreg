@@ -16,8 +16,7 @@ namespace lmsextreg.Data
         }
 
         public DbSet<Agency> Agencies { get; set; }
-        public DbSet<Country> Countries { get; set; }
-       // public DbSet<Program> Programs { get; set; }
+        //public DbSet<Program> Programs { get; set; }
         //public DbSet<Enrollment> Enrollments { get; set; }
         //public DbSet<Status> Statuses { get; set; }
 
@@ -31,7 +30,6 @@ namespace lmsextreg.Data
              Add your customizations after calling base.OnModelCreating(builder);
              ***************************************************************************/
             builder.Entity<Agency>().ToTable("Agency");
-            builder.Entity<Country>().ToTable("Country");
            // builder.Entity<Program>().ToTable("Program");
            // builder.Entity<Enrollment>().ToTable("Enrollment");
            // builder.Entity<Status>().ToTable("EnrollmentStatus");

@@ -38,17 +38,41 @@ namespace lmsextreg.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Country",
+                name: "AspNetUsers",
                 columns: table => new
                 {
-                    CountryID = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    CountryCode = table.Column<string>(nullable: true),
-                    CountryName = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    AgencyID = table.Column<int>(nullable: false),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    DateExpired = table.Column<DateTime>(nullable: false),
+                    DateRegistered = table.Column<DateTime>(nullable: false),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    JobTitle = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    MiddleName = table.Column<string>(nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Country", x => x.CountryID);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Agency_AgencyID",
+                        column: x => x.AgencyID,
+                        principalTable: "Agency",
+                        principalColumn: "AgencyID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,52 +93,6 @@ namespace lmsextreg.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    AgencyID = table.Column<int>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    CountryID = table.Column<int>(nullable: false),
-                    DateExpired = table.Column<DateTime>(nullable: false),
-                    DateRegistered = table.Column<DateTime>(nullable: false),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    JobTitle = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    MiddleName = table.Column<string>(nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    PostalCode = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Agency_AgencyID",
-                        column: x => x.AgencyID,
-                        principalTable: "Agency",
-                        principalColumn: "AgencyID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Country_CountryID",
-                        column: x => x.CountryID,
-                        principalTable: "Country",
-                        principalColumn: "CountryID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -235,11 +213,6 @@ namespace lmsextreg.Migrations
                 column: "AgencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CountryID",
-                table: "AspNetUsers",
-                column: "CountryID");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -276,9 +249,6 @@ namespace lmsextreg.Migrations
 
             migrationBuilder.DropTable(
                 name: "Agency");
-
-            migrationBuilder.DropTable(
-                name: "Country");
         }
     }
 }

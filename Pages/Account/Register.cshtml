@@ -55,21 +55,7 @@
                 </select>
                 <span asp-validation-for="Input.AgencyID" class="text-danger">
                 </span>
-            </div>      
-            <div class="form-group">
-                <label asp-for="Input.CountryID"></label>:
-                <select asp-for="Input.CountryID" class="form-control"
-                        asp-items="@Model.CountrySelectList">
-                    <option value="">-- Select Country --</option>
-                </select>
-                <span asp-validation-for="Input.CountryID" class="text-danger">
-                </span>
-            </div>    
-            <div class="form-group">
-                <label asp-for="Input.PostalCode"></label>:
-                <input asp-for="Input.PostalCode" class="form-control" />
-                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-            </div>                 
+            </div>                  
             <button type="submit" class="btn btn-default">Register</button>
         </form>
     </div>
