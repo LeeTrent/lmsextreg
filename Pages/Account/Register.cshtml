@@ -49,7 +49,7 @@
             </div>       
             <div class="form-group">
                 <label asp-for="Input.AgencyID"></label>:
-                <select asp-for="Input.AgencyID" class="form-control"
+                <select id="AgencySelectObj" asp-for="Input.AgencyID" class="form-control"
                         asp-items="@Model.AgencySelectList">
                     <option value="">-- Select Agency --</option>
                 </select>
@@ -58,7 +58,7 @@
             </div>     
             <div class="form-group">
                 <label asp-for="Input.SubAgencyID"></label>:
-                <select asp-for="Input.SubAgencyID" class="form-control"
+                <select id="SubAgencySelectObj" asp-for="Input.SubAgencyID" class="form-control"
                         asp-items="@Model.SubAgencySelectList">
                     <option value="">-- Select SubAgency --</option>
                 </select>
@@ -72,4 +72,45 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        $(document).ready(function() {
+            $("#SubAgencySelectObj").prop("disabled", true);
+        });    
+    </script>
+    <script>
+        $(function() {
+            $("#AgencySelectObj").change(function() {   
+                var selectedAgencyVal = $("#AgencySelectObj").val();
+                var subAgencySelectObj = $('#SubAgencySelectObj');
+                subAgencySelectObj.empty();
+                if (selectedAgencyVal != null && selectedAgencyVal != '') {
+                     $.ajax({
+                        type: 'GET',
+                        url: '/Account/Register?handler=SubAgenciesInAgency',
+                        contentType: "applications/json",
+                        data: {
+                            agyID: selectedAgencyVal
+                        },
+                        success: function(data) {
+                            $("#SubAgencySelectObj").prop("disabled", false);
+                            subAgencySelectObj.append('<option value="">' + '-- Select SubAgency --' + '</option>');
+                            $.each(data, function(idx, subAgency) {
+                                subAgencySelectObj.append('<option value="' + subAgency.value + '">' + subAgency.text + '</option>');
+                            });
+                        },
+                        error: function(excErr) {
+                            alert("error");
+                            console.log("AJAX error retrieving sub-agencies: ");
+                            console.log(excErr);
+                            console.log("selectedAgencyVal: ")
+                            console.log(selectedAgencyVal);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
 }

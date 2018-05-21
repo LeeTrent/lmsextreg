@@ -156,9 +156,9 @@ namespace lmsextreg.Pages.Account
             return Page();
         }
 
-       public JsonResult OnGetCountiesInContinent(string agencyID) 
+       public JsonResult OnGetSubAgenciesInAgency(string agyID) 
         {
-            List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agencyID ).ToList();
+            List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agyID ).ToList();
             return new JsonResult(new SelectList(subAgencyList, "SubAgencyID", "SubAgencyName"));
         }         
     }
