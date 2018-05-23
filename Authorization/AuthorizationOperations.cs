@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using lmsextreg.Constants;
 
-namespace lmsextreg
+namespace lmsextreg.Authorization
 {
     public class AuthorizationOperations
     {
