@@ -13,6 +13,8 @@ using lmsextreg.Data;
 using lmsextreg.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
+using lmsextreg.Authorization;
 
 namespace lmsextreg
 {
@@ -62,6 +64,10 @@ namespace lmsextreg
 
             // Configure startup to use AuthMessageSenderOptions
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            // Register the authorization handlers
+            services.AddScoped<IAuthorizationHandler, LearnerAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, ApproverAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
