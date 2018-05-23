@@ -23,7 +23,10 @@ namespace lmsextreg.Authorization
                                     OperationAuthorizationRequirement authRequirement,
                                     Enrollment authResource)
             {
-                if ( authContext == null || authResource == null )
+                if (    authContext         == null || 
+                        authContext.User    == null || 
+                        authResource        == null 
+                    )
                 {
                     return Task.CompletedTask;
                 }
