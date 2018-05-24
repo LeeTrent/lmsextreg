@@ -9,7 +9,7 @@ using lmsextreg.Data;
 namespace lmsextreg.Authorization
 {
     public class LearnerAuthorizationHandler
-        : AuthorizationHandler<OperationAuthorizationRequirement, Enrollment>
+        : AuthorizationHandler<OperationAuthorizationRequirement, ProgramEnrollment>
     {
         UserManager<ApplicationUser> _userManager;
 
@@ -21,7 +21,7 @@ namespace lmsextreg.Authorization
         protected override Task
             HandleRequirementAsync( AuthorizationHandlerContext authContext,
                                     OperationAuthorizationRequirement authRequirement,
-                                    Enrollment authResource)
+                                    ProgramEnrollment authResource)
             {
                 if (    authContext         == null || 
                         authContext.User    == null || 
@@ -40,7 +40,7 @@ namespace lmsextreg.Authorization
                     return Task.CompletedTask;
                 }
 
-                if ( authResource.LearnerID == _userManager.GetUserId(authContext.User) )
+                if ( authResource.LearnerUserId == _userManager.GetUserId(authContext.User) )
                 {
                     authContext.Succeed(authRequirement);
                 }

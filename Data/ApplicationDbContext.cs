@@ -17,9 +17,11 @@ namespace lmsextreg.Data
 
         public DbSet<Agency> Agencies { get; set; }
         public DbSet<SubAgency> SubAgencies { get; set; }
-        //public DbSet<Program> Programs { get; set; }
-        //public DbSet<Enrollment> Enrollments { get; set; }
-        //public DbSet<Status> Statuses { get; set; }
+        public DbSet<LMSProgram> LMSPrograms { get; set; }
+        public DbSet<ProgramApprover> ProgramApprovers { get; set; }
+        public DbSet<EnrollmentStatus> EnrollmentStatuses { get; set; }
+        public DbSet<ProgramEnrollment> ProgramEnrollments { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,16 +34,27 @@ namespace lmsextreg.Data
              ***************************************************************************/
             builder.Entity<Agency>().ToTable("Agency");
             builder.Entity<SubAgency>().ToTable("SubAgency");
-           // builder.Entity<Program>().ToTable("Program");
-           // builder.Entity<Enrollment>().ToTable("Enrollment");
-           // builder.Entity<Status>().ToTable("EnrollmentStatus");
-
+            builder.Entity<LMSProgram>().ToTable("LMSProgram");
+            builder.Entity<ProgramApprover>().ToTable("ProgramApprover");
+            builder.Entity<EnrollmentStatus>().ToTable("EnrollmentStatus");
+            builder.Entity<ProgramEnrollment>().ToTable("ProgramEnrollment");
+            
             /************************************************************************
              There are some configurations that can only be done with the fluent API
              (specifying a composite PK).
              ************************************************************************/            
-           // builder.Entity<Enrollment>()
-             //   .HasKey( pe => new { pe.ProgramID, pe.LearnerID } );         
+            // Composite Primary Key
+            builder.Entity<ProgramApprover>()
+                .HasKey( pa => new { pa.LMSProgramID, pa.ApproverUserId } );  
+            
+            // Composite Primary Key
+            builder.Entity<ProgramEnrollment>()
+                .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
+
+            // Unique Key Constraint
+            builder.Entity<EnrollmentStatus>()
+                .HasIndex(es => es.StatusName)
+                .IsUnique();                         
         }
     }
 }

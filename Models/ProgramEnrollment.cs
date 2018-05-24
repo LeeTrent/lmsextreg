@@ -1,46 +1,52 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace lmsextreg.Models
 {
-    public class Enrollment
+    public class ProgramEnrollment
     {
         ////////////////////////////////////////////////////////////
-        // ProgramID:
+        // LMSProgramID:
         // Foreign-key reference to Program table
         ///////////////////////////////////////////////////////////
-        public int ProgramID { get; set; }
+       [Required]
+        public int LMSProgramID { get; set; }
 
         ////////////////////////////////////////////////////////////
         // Program:
         // Navigation property to Program entity
         ///////////////////////////////////////////////////////////
-        public Program Program { get; set; }
+        public LMSProgram LMSProgram { get; set; }
 
         /////////////////////////////////////////////////////////////
-        // LearnerID:
+        // LearnerUserId:
         // (Same value as the 'Id' column in the 'AspNetUser' table)
         ////////////////////////////////////////////////////////////
-        public string LearnerID { get; set; }
+        [Required]
+        public string LearnerUserId { get; set; }
 
         ////////////////////////////////////////////////////////////
-        // ApproverID:
+        // ApproverUserId:
         // Same value as the 'Id' column in the 'AspNetUser' table
         ///////////////////////////////////////////////////////////
-        public string ApproverID { get; set; }
+        public string ApproverUserId { get; set; }
 
-        public Status Status { get; set; }
+        [Required]
+        public EnrollmentStatus Status { get; set; }
 
         ////////////////////////////////////////////////////////////
         // UserCreated:
         // User who inserted this row
         // (Same value as the 'Id' column in the 'AspNetUser' table)
         ////////////////////////////////////////////////////////////
+        [Required]
         public string UserCreated { get; set; }
 
         ////////////////////////////////////////////////////////////
         // DateCreated:
         // Date that row was originally inserted
         ///////////////////////////////////////////////////////////
+        [Required]
         public DateTime DateCreated { get; set; }
 
         ////////////////////////////////////////////////////////////

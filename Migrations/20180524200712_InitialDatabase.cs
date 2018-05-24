@@ -14,7 +14,7 @@ namespace lmsextreg.Migrations
                 columns: table => new
                 {
                     AgencyID = table.Column<string>(nullable: false),
-                    AgencyName = table.Column<string>(nullable: true),
+                    AgencyName = table.Column<string>(nullable: false),
                     DisplayOrder = table.Column<int>(nullable: false),
                     OPMCode = table.Column<string>(nullable: true),
                     TreasuryCode = table.Column<string>(nullable: true)
@@ -39,14 +39,40 @@ namespace lmsextreg.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EnrollmentStatus",
+                columns: table => new
+                {
+                    StatusCode = table.Column<string>(nullable: false),
+                    StatusName = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnrollmentStatus", x => x.StatusCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LMSProgram",
+                columns: table => new
+                {
+                    LMSProgramID = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    LongName = table.Column<string>(nullable: false),
+                    ShortName = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LMSProgram", x => x.LMSProgramID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SubAgency",
                 columns: table => new
                 {
                     SubAgencyID = table.Column<string>(nullable: false),
-                    AgencyID = table.Column<string>(nullable: true),
+                    AgencyID = table.Column<string>(nullable: false),
                     DisplayOrder = table.Column<int>(nullable: false),
                     OPMCode = table.Column<string>(nullable: true),
-                    SubAgencyName = table.Column<string>(nullable: true),
+                    SubAgencyName = table.Column<string>(nullable: false),
                     TreasuryCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -57,7 +83,7 @@ namespace lmsextreg.Migrations
                         column: x => x.AgencyID,
                         principalTable: "Agency",
                         principalColumn: "AgencyID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,6 +104,54 @@ namespace lmsextreg.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProgramApprover",
+                columns: table => new
+                {
+                    LMSProgramID = table.Column<int>(nullable: false),
+                    ApproverUserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProgramApprover", x => new { x.LMSProgramID, x.ApproverUserId });
+                    table.ForeignKey(
+                        name: "FK_ProgramApprover_LMSProgram_LMSProgramID",
+                        column: x => x.LMSProgramID,
+                        principalTable: "LMSProgram",
+                        principalColumn: "LMSProgramID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProgramEnrollment",
+                columns: table => new
+                {
+                    LMSProgramID = table.Column<int>(nullable: false),
+                    LearnerUserId = table.Column<string>(nullable: false),
+                    ApproverUserId = table.Column<string>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateLastUpdated = table.Column<DateTime>(nullable: false),
+                    StatusCode = table.Column<string>(nullable: false),
+                    UserCreated = table.Column<string>(nullable: false),
+                    UserLastUpdated = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProgramEnrollment", x => new { x.LMSProgramID, x.LearnerUserId });
+                    table.ForeignKey(
+                        name: "FK_ProgramEnrollment_LMSProgram_LMSProgramID",
+                        column: x => x.LMSProgramID,
+                        principalTable: "LMSProgram",
+                        principalColumn: "LMSProgramID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProgramEnrollment_EnrollmentStatus_StatusCode",
+                        column: x => x.StatusCode,
+                        principalTable: "EnrollmentStatus",
+                        principalColumn: "StatusCode",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -259,6 +333,17 @@ namespace lmsextreg.Migrations
                 column: "SubAgencyID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EnrollmentStatus_StatusName",
+                table: "EnrollmentStatus",
+                column: "StatusName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramEnrollment_StatusCode",
+                table: "ProgramEnrollment",
+                column: "StatusCode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubAgency_AgencyID",
                 table: "SubAgency",
                 column: "AgencyID");
@@ -282,10 +367,22 @@ namespace lmsextreg.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ProgramApprover");
+
+            migrationBuilder.DropTable(
+                name: "ProgramEnrollment");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "LMSProgram");
+
+            migrationBuilder.DropTable(
+                name: "EnrollmentStatus");
 
             migrationBuilder.DropTable(
                 name: "SubAgency");

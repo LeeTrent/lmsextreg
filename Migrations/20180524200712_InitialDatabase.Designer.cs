@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180517210855_InitialDatabase")]
+    [Migration("20180524200712_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,7 +95,8 @@ namespace lmsextreg.Migrations
                 {
                     b.Property<string>("AgencyID");
 
-                    b.Property<string>("AgencyName");
+                    b.Property<string>("AgencyName")
+                        .IsRequired();
 
                     b.Property<int>("DisplayOrder");
 
@@ -108,17 +109,89 @@ namespace lmsextreg.Migrations
                     b.ToTable("Agency");
                 });
 
+            modelBuilder.Entity("lmsextreg.Models.EnrollmentStatus", b =>
+                {
+                    b.Property<string>("StatusCode")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("StatusName")
+                        .IsRequired();
+
+                    b.HasKey("StatusCode");
+
+                    b.HasIndex("StatusName")
+                        .IsUnique();
+
+                    b.ToTable("EnrollmentStatus");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.LMSProgram", b =>
+                {
+                    b.Property<int>("LMSProgramID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("LongName")
+                        .IsRequired();
+
+                    b.Property<string>("ShortName")
+                        .IsRequired();
+
+                    b.HasKey("LMSProgramID");
+
+                    b.ToTable("LMSProgram");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.ProgramApprover", b =>
+                {
+                    b.Property<int>("LMSProgramID");
+
+                    b.Property<string>("ApproverUserId");
+
+                    b.HasKey("LMSProgramID", "ApproverUserId");
+
+                    b.ToTable("ProgramApprover");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.ProgramEnrollment", b =>
+                {
+                    b.Property<int>("LMSProgramID");
+
+                    b.Property<string>("LearnerUserId");
+
+                    b.Property<string>("ApproverUserId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateLastUpdated");
+
+                    b.Property<string>("StatusCode")
+                        .IsRequired();
+
+                    b.Property<string>("UserCreated")
+                        .IsRequired();
+
+                    b.Property<string>("UserLastUpdated");
+
+                    b.HasKey("LMSProgramID", "LearnerUserId");
+
+                    b.HasIndex("StatusCode");
+
+                    b.ToTable("ProgramEnrollment");
+                });
+
             modelBuilder.Entity("lmsextreg.Models.SubAgency", b =>
                 {
                     b.Property<string>("SubAgencyID");
 
-                    b.Property<string>("AgencyID");
+                    b.Property<string>("AgencyID")
+                        .IsRequired();
 
                     b.Property<int>("DisplayOrder");
 
                     b.Property<string>("OPMCode");
 
-                    b.Property<string>("SubAgencyName");
+                    b.Property<string>("SubAgencyName")
+                        .IsRequired();
 
                     b.Property<string>("TreasuryCode");
 
@@ -247,11 +320,33 @@ namespace lmsextreg.Migrations
                         .HasForeignKey("SubAgencyID");
                 });
 
+            modelBuilder.Entity("lmsextreg.Models.ProgramApprover", b =>
+                {
+                    b.HasOne("lmsextreg.Models.LMSProgram")
+                        .WithMany("ProgramApprovers")
+                        .HasForeignKey("LMSProgramID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.ProgramEnrollment", b =>
+                {
+                    b.HasOne("lmsextreg.Models.LMSProgram", "LMSProgram")
+                        .WithMany()
+                        .HasForeignKey("LMSProgramID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusCode")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("lmsextreg.Models.SubAgency", b =>
                 {
                     b.HasOne("lmsextreg.Models.Agency", "Agency")
                         .WithMany("SubAgencies")
-                        .HasForeignKey("AgencyID");
+                        .HasForeignKey("AgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
