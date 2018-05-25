@@ -334,7 +334,7 @@ namespace lmsextreg.Migrations
                         .HasForeignKey("LMSProgramID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "Status")
+                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "EnrollmentStatus")
                         .WithMany()
                         .HasForeignKey("StatusCode")
                         .OnDelete(DeleteBehavior.Cascade);

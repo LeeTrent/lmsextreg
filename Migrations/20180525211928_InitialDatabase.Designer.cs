@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180525144447_InitialDatabase")]
+    [Migration("20180525211928_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -335,7 +335,7 @@ namespace lmsextreg.Migrations
                         .HasForeignKey("LMSProgramID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "Status")
+                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "EnrollmentStatus")
                         .WithMany()
                         .HasForeignKey("StatusCode")
                         .OnDelete(DeleteBehavior.Cascade);

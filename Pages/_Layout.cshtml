@@ -34,7 +34,7 @@
                     <li><a asp-page="/Index">Home</a></li>
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole("Learner") )
                     {
-                        <li><a asp-page="/Index">My Programs</a></li>
+                        <li><a asp-page="/Enrollments/Index">My Programs</a></li>
                     }
                     <li><a asp-page="/About">About</a></li>
                     <li><a asp-page="/Contact">Contact</a></li>

@@ -32,7 +32,9 @@ namespace lmsextreg.Models
         public string ApproverUserId { get; set; }
 
         [Required]
-        public EnrollmentStatus Status { get; set; }
+        public string StatusCode { get; set; }
+
+        public EnrollmentStatus EnrollmentStatus { get; set; }
 
         ////////////////////////////////////////////////////////////
         // UserCreated:

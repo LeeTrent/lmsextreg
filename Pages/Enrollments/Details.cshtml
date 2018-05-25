@@ -1,0 +1,55 @@
+@page
+@model lmsextreg.Pages.Enrollments.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ProgramEnrollment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.ApproverUserId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.ApproverUserId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.UserCreated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.UserCreated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.DateCreated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.DateCreated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.UserLastUpdated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.UserLastUpdated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.DateLastUpdated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.DateLastUpdated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProgramEnrollment.LMSProgram)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.LMSProgram.LongName)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-page="./Index">Back to List</a>
+</div>

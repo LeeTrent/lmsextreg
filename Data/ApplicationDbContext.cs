@@ -57,6 +57,15 @@ namespace lmsextreg.Data
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
                 .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
+            
+            /////////////////////////////////////////////////////////////////////////
+            // ProgramEnrollment:
+            //  - Foreign Key (EnrollmentStatus.StatusCode)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<ProgramEnrollment>()
+                .HasOne( pe => pe.EnrollmentStatus)
+                .WithMany()
+                .HasForeignKey(pe => pe.StatusCode);
 
             /////////////////////////////////////////////////////////////////////////
             // StatusTransition:

@@ -1,0 +1,66 @@
+@page
+@model lmsextreg.Pages.Enrollments.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].ApproverUserId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].UserCreated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateCreated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].UserLastUpdated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateLastUpdated)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProgramEnrollment[0].LMSProgram)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ProgramEnrollment) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproverUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserLastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateLastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LMSProgram.LongName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
