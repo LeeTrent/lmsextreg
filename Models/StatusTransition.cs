@@ -5,9 +5,9 @@ namespace lmsextreg.Models
     public class StatusTransition
     {
         [Required]
-        public EnrollmentStatus FromStatus { get; set; }
+        public string FromStatusCode { get; set; }
         [Required]
-        public EnrollmentStatus ToStatus { get; set; }
+        public string ToStatusCode { get; set; }
         [Required]
         public string ActionCode { get; set; }
         [Required]        

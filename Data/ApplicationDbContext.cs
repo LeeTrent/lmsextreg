@@ -43,15 +43,32 @@ namespace lmsextreg.Data
              There are some configurations that can only be done with the fluent API
              (specifying a composite PK).
              ************************************************************************/            
-            // Composite Primary Key
+            
+            /////////////////////////////////////////////////////////////////////////
+            //ProgramApprover: 
+            // - Composite Primary Key
+            /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramApprover>()
                 .HasKey( pa => new { pa.LMSProgramID, pa.ApproverUserId } );  
             
-            // Composite Primary Key
+            /////////////////////////////////////////////////////////////////////////
+            // ProgramEnrollment:
+            //  - Composite Primary Key
+            /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
                 .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
 
-            // Unique Key Constraint
+            /////////////////////////////////////////////////////////////////////////
+            // StatusTransition:
+            //  - Composite Primary Key
+            /////////////////////////////////////////////////////////////////////////
+            //builder.Entity<StatusTransition>()
+            //    .HasKey( st => new { st.FromStatusCode, st.ToStatusCode } );      
+                
+            /////////////////////////////////////////////////////////////////////////                           
+            // EnrollmentStatus:
+            // - Unique Key Constraint
+            /////////////////////////////////////////////////////////////////////////
             builder.Entity<EnrollmentStatus>()
                 .HasIndex(es => es.StatusName)
                 .IsUnique();                         
