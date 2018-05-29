@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -28,6 +29,7 @@ namespace lmsextreg.Authorization
                         authResource        == null 
                     )
                 {
+                    Console.WriteLine("LearnerAuthorizationHandler: FAILED (null check)");
                     return Task.CompletedTask;
                 }
 
@@ -37,14 +39,17 @@ namespace lmsextreg.Authorization
                         authRequirement.Name != CRUDConstants.DELETE
                     )
                 {
+                    Console.WriteLine("LearnerAuthorizationHandler: FAILED (unauthorized operation)");
                     return Task.CompletedTask;
                 }
 
                 if ( authResource.LearnerUserId == _userManager.GetUserId(authContext.User) )
                 {
+                    Console.WriteLine("LearnerAuthorizationHandler: SUCCESS (authorization check PASSED)");
                     authContext.Succeed(authRequirement);
                 }
-
+                
+                Console.WriteLine("LearnerAuthorizationHandler: FAILED (unauthorized resource)");
                 return Task.CompletedTask;
             }
     }

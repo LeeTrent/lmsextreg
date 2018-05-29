@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Models;
@@ -33,11 +34,16 @@ namespace lmsextreg.Pages.Enrollments
         private readonly lmsextreg.Data.ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private readonly IAuthorizationService _authorizationService;
+
         public CreateModel( lmsextreg.Data.ApplicationDbContext context,
-                            UserManager<ApplicationUser> userMgr )
+                            UserManager<ApplicationUser> userMgr,
+                            IAuthorizationService authorizationSvc
+                            )
         {
             _context = context;
             _userManager = userMgr;
+            _authorizationService = authorizationSvc;
         }
 
         public class InputModel
@@ -68,14 +74,33 @@ namespace lmsextreg.Pages.Enrollments
              }
             
             Console.WriteLine("ModelState IS valid");
-            
-            var pe = new ProgramEnrollment();
-            pe.LMSProgramID         = Int32.Parse(Input.LMSProgramID);
-            pe.LearnerUserId        = _userManager.GetUserId(User);
-            pe.UserCreated          = _userManager.GetUserId(User);
-            pe.DateCreated          = DateTime.Now;
-            pe.StatusCode           = StatusConstants.PENDING;
+          
+            // var pe = new ProgramEnrollment();
+            // pe.LMSProgramID         = Int32.Parse(Input.LMSProgramID);
+            // pe.LearnerUserId        = _userManager.GetUserId(User);
+            // pe.UserCreated          = _userManager.GetUserId(User);
+            // pe.DateCreated          = DateTime.Now;
+            // pe.StatusCode           = StatusConstants.PENDING;
 
+            var pe = new ProgramEnrollment
+            {
+                LMSProgramID         = Int32.Parse(Input.LMSProgramID),
+                LearnerUserId        = _userManager.GetUserId(User),
+                UserCreated          = _userManager.GetUserId(User),
+                DateCreated          = DateTime.Now,
+                StatusCode           = StatusConstants.PENDING
+            };
+
+        //    var authorizationCheck = await _authorizationService.AuthorizeAsync(User, pe, CRUDConstants.CREATE);
+        //    Console.WriteLine("authorizationCheck.Succeeded: " + authorizationCheck.Succeeded);
+
+        //    if ( authorizationCheck.Succeeded )
+        //    {
+        //        Console.WriteLine("authorizationCheck FAILED - return new ChallengeResult()");
+        //        return new ChallengeResult();
+        //    }
+
+            Console.WriteLine("authorizationCheck PASSED - persisiting program enrollment to database");
             _context.ProgramEnrollments.Add(pe);
             await _context.SaveChangesAsync();
 

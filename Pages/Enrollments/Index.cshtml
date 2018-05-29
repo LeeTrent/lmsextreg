@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h3>My Programs</h3>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,46 +14,34 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].ApproverUserId)
-                </th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].LMSProgram)
+                </th>     
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].EnrollmentStatus)
+                </th>                       
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].UserCreated)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateCreated)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].UserLastUpdated)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateLastUpdated)
-                </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProgramEnrollment[0].LMSProgram)
-            </th>
-            <th></th>
+                <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.ProgramEnrollment) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ApproverUserId)
+                @Html.DisplayFor(modelItem => item.LMSProgram.LongName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserCreated)
+                @Html.DisplayFor(modelItem => item.EnrollmentStatus.StatusName)
+            </td>                    
+            <td>
+                @Html.DisplayFor(modelItem => item.Learner.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserLastUpdated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateLastUpdated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LMSProgram.LongName)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

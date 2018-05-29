@@ -67,6 +67,15 @@ namespace lmsextreg.Data
                 .WithMany()
                 .HasForeignKey(pe => pe.StatusCode);
 
+           /////////////////////////////////////////////////////////////////////////
+            // ProgramEnrollment:
+            //  - Foreign Key (ApplicationUser.Learner)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<ProgramEnrollment>()
+                .HasOne( pe => pe.Learner)
+                .WithMany()
+                .HasForeignKey(pe => pe.LearnerUserId);
+
             /////////////////////////////////////////////////////////////////////////
             // StatusTransition:
             //  - Composite Primary Key

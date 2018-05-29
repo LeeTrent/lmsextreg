@@ -21,10 +21,18 @@ namespace lmsextreg.Pages.Enrollments
 
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
 
+        // public async Task OnGetAsync()
+        // {
+        //     ProgramEnrollment = await _context.ProgramEnrollments
+        //         .Include(p => p.LMSProgram).ToListAsync();
+        // }
         public async Task OnGetAsync()
         {
             ProgramEnrollment = await _context.ProgramEnrollments
-                .Include(p => p.LMSProgram).ToListAsync();
-        }
+                .Include(p => p.LMSProgram)
+                .Include(p => p.EnrollmentStatus)
+                .Include(p => p.Learner)
+                .ToListAsync();
+        }        
     }
 }

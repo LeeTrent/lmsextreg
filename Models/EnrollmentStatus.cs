@@ -7,8 +7,10 @@ namespace lmsextreg.Models
     {
         [Key]
         [Required]
+        [Display(Name = "Status Code")]
         public string StatusCode { get; set; }
         [Required]
+         [Display(Name = "Status")]
         public string StatusName { get; set; }
     }
 }

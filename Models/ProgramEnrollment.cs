@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using lmsextreg.Data;
 
 namespace lmsextreg.Models
 {
@@ -16,6 +17,7 @@ namespace lmsextreg.Models
         // Program:
         // Navigation property to Program entity
         ///////////////////////////////////////////////////////////
+        [Display(Name = "Program")]
         public LMSProgram LMSProgram { get; set; }
 
         /////////////////////////////////////////////////////////////
@@ -23,17 +25,22 @@ namespace lmsextreg.Models
         // (Same value as the 'Id' column in the 'AspNetUser' table)
         ////////////////////////////////////////////////////////////
         [Required]
+        [Display(Name = "Student")]
         public string LearnerUserId { get; set; }
+
+        public ApplicationUser Learner { get; set; }
 
         ////////////////////////////////////////////////////////////
         // ApproverUserId:
         // Same value as the 'Id' column in the 'AspNetUser' table
         ///////////////////////////////////////////////////////////
+        [Display(Name = "Enrollment Approver")]
         public string ApproverUserId { get; set; }
 
         [Required]
         public string StatusCode { get; set; }
 
+        [Display(Name = "Status")]
         public EnrollmentStatus EnrollmentStatus { get; set; }
 
         ////////////////////////////////////////////////////////////
@@ -42,6 +49,7 @@ namespace lmsextreg.Models
         // (Same value as the 'Id' column in the 'AspNetUser' table)
         ////////////////////////////////////////////////////////////
         [Required]
+        [Display(Name = "Created By")]
         public string UserCreated { get; set; }
 
         ////////////////////////////////////////////////////////////
@@ -49,6 +57,7 @@ namespace lmsextreg.Models
         // Date that row was originally inserted
         ///////////////////////////////////////////////////////////
         [Required]
+        [Display(Name = "Date Requested")]
         public DateTime DateCreated { get; set; }
 
         ////////////////////////////////////////////////////////////
