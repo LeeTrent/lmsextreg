@@ -38,6 +38,7 @@ namespace lmsextreg.Pages.Enrollments
             LoggedInUser = await GetCurrentUserAsync();
 
             ProgramEnrollment = await _context.ProgramEnrollments
+                .Where(p => p.StudentUserId == LoggedInUser.Id)
                 .Include(p => p.LMSProgram)
                 .Include(p => p.EnrollmentStatus)
                 .Include(p => p.Student)
@@ -45,7 +46,5 @@ namespace lmsextreg.Pages.Enrollments
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
-
     }
 }
