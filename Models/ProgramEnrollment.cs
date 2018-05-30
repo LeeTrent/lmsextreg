@@ -33,13 +33,14 @@ namespace lmsextreg.Models
         ////////////////////////////////////////////////////////////
         [Required]
         [Display(Name = "Student")]
-        public string LearnerUserId { get; set; }
+        public string StudentUserId { get; set; }
 
         //////////////////////////////////////////////////////////////
         // Program:
         // Navigation property to ApplicationUser entity for Learner
         /////////////////////////////////////////////////////////////
-        public ApplicationUser Learner { get; set; }
+        [Display(Name = "Student")]
+        public ApplicationUser Student { get; set; }
 
         ////////////////////////////////////////////////////////////
         // ApproverUserId:
@@ -60,7 +61,7 @@ namespace lmsextreg.Models
         // (Same value as the 'Id' column in the 'AspNetUser' table)
         ////////////////////////////////////////////////////////////
         [Required]
-        [Display(Name = "Created By")]
+        [Display(Name = "Requested By")]
         public string UserCreated { get; set; }
 
         ////////////////////////////////////////////////////////////

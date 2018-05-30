@@ -66,7 +66,7 @@ namespace lmsextreg
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Register the authorization handlers
-            services.AddScoped<IAuthorizationHandler, LearnerAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, StudentAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, ApproverAuthorizationHandler>();
         }
 

@@ -85,7 +85,7 @@ namespace lmsextreg.Pages.Enrollments
             var pe = new ProgramEnrollment
             {
                 LMSProgramID         = Int32.Parse(Input.LMSProgramID),
-                LearnerUserId        = _userManager.GetUserId(User),
+                StudentUserId        = _userManager.GetUserId(User),
                 UserCreated          = _userManager.GetUserId(User),
                 DateCreated          = DateTime.Now,
                 StatusCode           = StatusConstants.PENDING

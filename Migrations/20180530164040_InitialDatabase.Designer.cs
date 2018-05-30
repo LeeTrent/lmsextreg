@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180529211606_InitialDatabase")]
+    [Migration("20180530164040_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,10 +165,10 @@ namespace lmsextreg.Migrations
 
                     b.Property<int>("LMSProgramID");
 
-                    b.Property<string>("LearnerUserId")
+                    b.Property<string>("StatusCode")
                         .IsRequired();
 
-                    b.Property<string>("StatusCode")
+                    b.Property<string>("StudentUserId")
                         .IsRequired();
 
                     b.Property<string>("UserCreated")
@@ -178,11 +178,11 @@ namespace lmsextreg.Migrations
 
                     b.HasKey("ProgramEnrollmentID");
 
-                    b.HasIndex("LearnerUserId");
-
                     b.HasIndex("StatusCode");
 
-                    b.HasIndex("LMSProgramID", "LearnerUserId")
+                    b.HasIndex("StudentUserId");
+
+                    b.HasIndex("LMSProgramID", "StudentUserId")
                         .IsUnique();
 
                     b.ToTable("ProgramEnrollment");
@@ -344,14 +344,14 @@ namespace lmsextreg.Migrations
                         .HasForeignKey("LMSProgramID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("lmsextreg.Data.ApplicationUser", "Learner")
-                        .WithMany()
-                        .HasForeignKey("LearnerUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("lmsextreg.Models.EnrollmentStatus", "EnrollmentStatus")
                         .WithMany()
                         .HasForeignKey("StatusCode")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Data.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

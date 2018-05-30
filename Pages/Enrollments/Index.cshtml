@@ -4,8 +4,8 @@
 @{
     ViewData["Title"] = "Index";
 }
-<h3>@Model.LoggedInUser.FullName<br/>Programs Enrollments</h3>
-
+<h3 style="margin-bottom: 2px;">@Model.LoggedInUser.FullName</h3>
+<h4 style="margin-top: 2px;">Programs Enrollments</h4>
 <p>
     <a asp-page="Create">Create New Enrollment</a>
 </p>
@@ -16,11 +16,11 @@
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].LMSProgram)
                 </th>     
                 <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].Student)
+                </th>                  
+                <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].EnrollmentStatus)
                 </th>                       
-                <th>
-                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].UserCreated)
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateCreated)
                 </th>
@@ -34,11 +34,11 @@
                 @Html.DisplayFor(modelItem => item.LMSProgram.LongName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Student.FullName)
+            </td>            
+            <td>
                 @Html.DisplayFor(modelItem => item.EnrollmentStatus.StatusName)
             </td>                    
-            <td>
-                @Html.DisplayFor(modelItem => item.Learner.FullName)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>

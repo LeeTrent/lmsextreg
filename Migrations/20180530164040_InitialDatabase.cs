@@ -265,8 +265,8 @@ namespace lmsextreg.Migrations
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateLastUpdated = table.Column<DateTime>(nullable: false),
                     LMSProgramID = table.Column<int>(nullable: false),
-                    LearnerUserId = table.Column<string>(nullable: false),
                     StatusCode = table.Column<string>(nullable: false),
+                    StudentUserId = table.Column<string>(nullable: false),
                     UserCreated = table.Column<string>(nullable: false),
                     UserLastUpdated = table.Column<string>(nullable: true)
                 },
@@ -280,16 +280,16 @@ namespace lmsextreg.Migrations
                         principalColumn: "LMSProgramID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProgramEnrollment_AspNetUsers_LearnerUserId",
-                        column: x => x.LearnerUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ProgramEnrollment_EnrollmentStatus_StatusCode",
                         column: x => x.StatusCode,
                         principalTable: "EnrollmentStatus",
                         principalColumn: "StatusCode",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProgramEnrollment_AspNetUsers_StudentUserId",
+                        column: x => x.StudentUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -347,19 +347,19 @@ namespace lmsextreg.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgramEnrollment_LearnerUserId",
-                table: "ProgramEnrollment",
-                column: "LearnerUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProgramEnrollment_StatusCode",
                 table: "ProgramEnrollment",
                 column: "StatusCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgramEnrollment_LMSProgramID_LearnerUserId",
+                name: "IX_ProgramEnrollment_StudentUserId",
                 table: "ProgramEnrollment",
-                columns: new[] { "LMSProgramID", "LearnerUserId" },
+                column: "StudentUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramEnrollment_LMSProgramID_StudentUserId",
+                table: "ProgramEnrollment",
+                columns: new[] { "LMSProgramID", "StudentUserId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -398,10 +398,10 @@ namespace lmsextreg.Migrations
                 name: "LMSProgram");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "EnrollmentStatus");
 
             migrationBuilder.DropTable(
-                name: "EnrollmentStatus");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "SubAgency");

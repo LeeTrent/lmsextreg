@@ -9,12 +9,12 @@ using lmsextreg.Data;
 
 namespace lmsextreg.Authorization
 {
-    public class LearnerAuthorizationHandler
+    public class StudentAuthorizationHandler
         : AuthorizationHandler<OperationAuthorizationRequirement, ProgramEnrollment>
     {
         UserManager<ApplicationUser> _userManager;
 
-        public LearnerAuthorizationHandler(UserManager<ApplicationUser> userMgr)
+        public StudentAuthorizationHandler(UserManager<ApplicationUser> userMgr)
         {
             _userManager = userMgr;
         }
@@ -29,7 +29,7 @@ namespace lmsextreg.Authorization
                         authResource        == null 
                     )
                 {
-                    Console.WriteLine("LearnerAuthorizationHandler: FAILED (null check)");
+                    Console.WriteLine("StudentAuthorizationHandler: FAILED (null check)");
                     return Task.CompletedTask;
                 }
 
@@ -39,17 +39,17 @@ namespace lmsextreg.Authorization
                         authRequirement.Name != CRUDConstants.DELETE
                     )
                 {
-                    Console.WriteLine("LearnerAuthorizationHandler: FAILED (unauthorized operation)");
+                    Console.WriteLine("StudentAuthorizationHandler: FAILED (unauthorized operation)");
                     return Task.CompletedTask;
                 }
 
-                if ( authResource.LearnerUserId == _userManager.GetUserId(authContext.User) )
+                if ( authResource.StudentUserId == _userManager.GetUserId(authContext.User) )
                 {
-                    Console.WriteLine("LearnerAuthorizationHandler: SUCCESS (authorization check PASSED)");
+                    Console.WriteLine("StudentAuthorizationHandler: SUCCESS (authorization check PASSED)");
                     authContext.Succeed(authRequirement);
                 }
                 
-                Console.WriteLine("LearnerAuthorizationHandler: FAILED (unauthorized resource)");
+                Console.WriteLine("StudentAuthorizationHandler: FAILED (unauthorized resource)");
                 return Task.CompletedTask;
             }
     }

@@ -64,7 +64,7 @@ namespace lmsextreg.Data
             // - Unique Key Constraint Combination (LMSProgramID, LearnerUserId)
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
-                .HasIndex( p => new {p.LMSProgramID, p.LearnerUserId} )
+                .HasIndex( p => new {p.LMSProgramID, p.StudentUserId} )
                 .IsUnique();             
             /////////////////////////////////////////////////////////////////////////
             // ProgramEnrollment:
@@ -80,9 +80,9 @@ namespace lmsextreg.Data
             //  - Foreign Key (ApplicationUser.Learner)
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
-                .HasOne( pe => pe.Learner)
+                .HasOne( pe => pe.Student)
                 .WithMany()
-                .HasForeignKey(pe => pe.LearnerUserId);
+                .HasForeignKey(pe => pe.StudentUserId);
 
             /////////////////////////////////////////////////////////////////////////
             // StatusTransition:

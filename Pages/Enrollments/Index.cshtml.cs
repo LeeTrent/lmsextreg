@@ -40,7 +40,7 @@ namespace lmsextreg.Pages.Enrollments
             ProgramEnrollment = await _context.ProgramEnrollments
                 .Include(p => p.LMSProgram)
                 .Include(p => p.EnrollmentStatus)
-                .Include(p => p.Learner)
+                .Include(p => p.Student)
                 .ToListAsync();
         }
 
