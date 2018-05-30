@@ -55,9 +55,17 @@ namespace lmsextreg.Data
             // ProgramEnrollment:
             //  - Composite Primary Key
             /////////////////////////////////////////////////////////////////////////
+            // builder.Entity<ProgramEnrollment>()
+            //     .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
+            /////////////////////////////////////////////////////////////////////////                           
+
+            /////////////////////////////////////////////////////////////////////////                           
+            // ProgramEnrollment:
+            // - Unique Key Constraint Combination (LMSProgramID, LearnerUserId)
+            /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
-                .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
-            
+                .HasIndex( p => new {p.LMSProgramID, p.LearnerUserId} )
+                .IsUnique();             
             /////////////////////////////////////////////////////////////////////////
             // ProgramEnrollment:
             //  - Foreign Key (EnrollmentStatus.StatusCode)

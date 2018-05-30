@@ -7,6 +7,12 @@ namespace lmsextreg.Models
     public class ProgramEnrollment
     {
         ////////////////////////////////////////////////////////////
+        // ProgramEnrollmentID:
+        // Primary-key (auto-generated)
+        ////////////////////////////////////////////////////////////
+        public int ProgramEnrollmentID { get; set; 
+        }
+        ////////////////////////////////////////////////////////////
         // LMSProgramID:
         // Foreign-key reference to Program table
         ///////////////////////////////////////////////////////////
@@ -22,12 +28,17 @@ namespace lmsextreg.Models
 
         /////////////////////////////////////////////////////////////
         // LearnerUserId:
-        // (Same value as the 'Id' column in the 'AspNetUser' table)
+        // Same value as the 'Id' column in the 'AspNetUser' table
+        // Foreign-key reference to ApplicationUser for Learner
         ////////////////////////////////////////////////////////////
         [Required]
         [Display(Name = "Student")]
         public string LearnerUserId { get; set; }
 
+        //////////////////////////////////////////////////////////////
+        // Program:
+        // Navigation property to ApplicationUser entity for Learner
+        /////////////////////////////////////////////////////////////
         public ApplicationUser Learner { get; set; }
 
         ////////////////////////////////////////////////////////////

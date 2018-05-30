@@ -4,8 +4,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h3>Programs Enrollments for @Model.LoggedInUser.FullName:</h3>
+<h3>@Model.LoggedInUser.FullName<br/>Programs Enrollments</h3>
 
 <p>
     <a asp-page="Create">Create New Enrollment</a>
@@ -25,7 +24,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].DateCreated)
                 </th>
-                <th></th>
+                <th>Available Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -44,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-page="./Edit"    asp-route-id="@item.ProgramEnrollmentID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ProgramEnrollmentID">Details</a> |
+                <a asp-page="./Delete"  asp-route-id="@item.ProgramEnrollmentID">Delete</a>
             </td>
         </tr>
 }

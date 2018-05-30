@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180525211928_InitialDatabase")]
+    [Migration("20180529211606_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -154,15 +154,19 @@ namespace lmsextreg.Migrations
 
             modelBuilder.Entity("lmsextreg.Models.ProgramEnrollment", b =>
                 {
-                    b.Property<int>("LMSProgramID");
-
-                    b.Property<string>("LearnerUserId");
+                    b.Property<int>("ProgramEnrollmentID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ApproverUserId");
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateLastUpdated");
+
+                    b.Property<int>("LMSProgramID");
+
+                    b.Property<string>("LearnerUserId")
+                        .IsRequired();
 
                     b.Property<string>("StatusCode")
                         .IsRequired();
@@ -172,9 +176,14 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("UserLastUpdated");
 
-                    b.HasKey("LMSProgramID", "LearnerUserId");
+                    b.HasKey("ProgramEnrollmentID");
+
+                    b.HasIndex("LearnerUserId");
 
                     b.HasIndex("StatusCode");
+
+                    b.HasIndex("LMSProgramID", "LearnerUserId")
+                        .IsUnique();
 
                     b.ToTable("ProgramEnrollment");
                 });
@@ -333,6 +342,11 @@ namespace lmsextreg.Migrations
                     b.HasOne("lmsextreg.Models.LMSProgram", "LMSProgram")
                         .WithMany()
                         .HasForeignKey("LMSProgramID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Data.ApplicationUser", "Learner")
+                        .WithMany()
+                        .HasForeignKey("LearnerUserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("lmsextreg.Models.EnrollmentStatus", "EnrollmentStatus")
