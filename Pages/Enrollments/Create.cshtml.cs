@@ -1,15 +1,3 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.AspNetCore.Mvc.RazorPages;
-// using Microsoft.AspNetCore.Mvc.Rendering;
-// using lmsextreg.Data;
-// using lmsextreg.Models;
-// using lmsextreg.Constants;
-// using Microsoft.AspNetCore.Identity;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,29 +45,22 @@ namespace lmsextreg.Pages.Enrollments
         [BindProperty]
         public InputModel Input { get; set; }
         public SelectList ProgramSelectList { get; set; }
-
-        // private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
-        // {
-        //     var departmentsQuery = from d in _context.Departments
-        //                         orderby d.Name
-        //                         select d;
-        //     ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
-        // }
-
+        public bool ShowProgramDropdown {get; set; }
 
         public IActionResult OnGet()
         {
-            // ViewBag.cities= new SelectList(db.cities.Where(g => g.visible == true), "id", "title", myitem.cityId);
-            // https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.selectlist.-ctor?view=aspnetcore-2.1#Microsoft_AspNetCore_Mvc_Rendering_SelectList__ctor_System_Collections_IEnumerable_System_String_System_String_
-            
-
             var userID = _userManager.GetUserId(User);
-            //var sql = "SELECT \"LMSProgramID\", \"LongName\" FROM public.\"LMSProgram\"";
             var sql = "SELECT * FROM public.\"LMSProgram\" WHERE \"LMSProgramID\" NOT IN (SELECT \"LMSProgramID\" FROM public.\"ProgramEnrollment\" WHERE \"StudentUserId\" = {0})";
             Console.WriteLine("SQL: ");
             Console.WriteLine(sql);
             var resultSet =  _context.LMSPrograms.FromSql(sql, userID).AsNoTracking();
+
+            Console.WriteLine("resultSet: ");         
+            Console.WriteLine(resultSet.Count());
+
             ProgramSelectList = new SelectList(resultSet, "LMSProgramID", "LongName");
+            ShowProgramDropdown = (resultSet.Count() > 0);
+
 
             //var programSelectQuery = from p in _context.LMSPrograms select p;         
             //ProgramSelectList = new SelectList(programSelectQuery, "LMSProgramID", "LongName");

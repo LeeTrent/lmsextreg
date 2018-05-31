@@ -19,19 +19,18 @@
                 <select asp-for="ProgramEnrollment.LMSProgramID" class ="form-control" asp-items="ViewBag.LMSProgramID"></select>
             </div>
             -->
-
-            <div class="form-group">
-                <label asp-for="Input.LMSProgramID"></label>:
-                <select asp-for="Input.LMSProgramID" class="form-control"
-                        asp-items="@Model.ProgramSelectList">
-                    <option value="">-- Select Program --</option>
-                </select>
-                <span asp-validation-for="Input.LMSProgramID" class="text-danger">
-                </span>
-            </div> 
-
-
-
+            @if ( @Model.ShowProgramDropdown )
+            {
+                <div class="form-group">
+                    <label asp-for="Input.LMSProgramID"></label>:
+                    <select asp-for="Input.LMSProgramID" class="form-control"
+                            asp-items="@Model.ProgramSelectList">
+                        <option value="">-- Select Program --</option>
+                    </select>
+                    <span asp-validation-for="Input.LMSProgramID" class="text-danger">
+                    </span>
+                </div> 
+            }
 
             <!--
             <div class="form-group">
