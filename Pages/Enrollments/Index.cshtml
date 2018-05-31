@@ -6,9 +6,13 @@
 }
 <h3 style="margin-bottom: 2px;">@Model.LoggedInUser.FullName</h3>
 <h4 style="margin-top: 2px;">Programs Enrollments</h4>
-<p>
-    <a asp-page="Create">Request New Enrollment</a>
-</p>
+
+@if ( @Model.ProgramsAreAvailable )
+{
+    <p>
+        <a asp-page="Create">Request New Enrollment</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>

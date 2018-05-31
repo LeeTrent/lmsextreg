@@ -26,13 +26,8 @@ namespace lmsextreg.Pages.Enrollments
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
 
         public ApplicationUser LoggedInUser {get;set;}
+        public bool ProgramsAreAvailable {get; set; }
 
-        // public async Task OnGetAsync()
-        // {
-        //     ProgramEnrollment = await _context.ProgramEnrollments
-        //         .Include(p => p.LMSProgram).ToListAsync();
-        // }
-        
         public async Task OnGetAsync()
         {
             LoggedInUser = await GetCurrentUserAsync();
@@ -43,6 +38,11 @@ namespace lmsextreg.Pages.Enrollments
                 .Include(p => p.EnrollmentStatus)
                 .Include(p => p.Student)
                 .ToListAsync();
+           
+            var userID = _userManager.GetUserId(User);
+            var sql = "SELECT * FROM public.\"LMSProgram\" WHERE \"LMSProgramID\" NOT IN (SELECT \"LMSProgramID\" FROM public.\"ProgramEnrollment\" WHERE \"StudentUserId\" = {0})";
+            var resultSet =  _context.LMSPrograms.FromSql(sql, userID).AsNoTracking();
+            ProgramsAreAvailable = (resultSet.Count() > 0);
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
