@@ -30,7 +30,7 @@ namespace lmsextreg.Pages.Enrollments
             }
 
             ProgramEnrollment = await _context.ProgramEnrollments
-                .Include(p => p.LMSProgram).SingleOrDefaultAsync(m => m.LMSProgramID == id);
+                .Include(p => p.LMSProgram).SingleOrDefaultAsync(m => m.ProgramEnrollmentID == id);
 
             if (ProgramEnrollment == null)
             {

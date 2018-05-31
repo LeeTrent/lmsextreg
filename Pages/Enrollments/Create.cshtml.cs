@@ -26,6 +26,7 @@ using lmsextreg.Data;
 using lmsextreg.Models;
 using lmsextreg.Constants;
 
+using Microsoft.EntityFrameworkCore;
 
 namespace lmsextreg.Pages.Enrollments
 {
@@ -57,9 +58,33 @@ namespace lmsextreg.Pages.Enrollments
         public InputModel Input { get; set; }
         public SelectList ProgramSelectList { get; set; }
 
+        // private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        // {
+        //     var departmentsQuery = from d in _context.Departments
+        //                         orderby d.Name
+        //                         select d;
+        //     ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
+        // }
+
+
         public IActionResult OnGet()
         {
-            ProgramSelectList = new SelectList(_context.LMSPrograms, "LMSProgramID", "LongName");
+            // ViewBag.cities= new SelectList(db.cities.Where(g => g.visible == true), "id", "title", myitem.cityId);
+            // https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.selectlist.-ctor?view=aspnetcore-2.1#Microsoft_AspNetCore_Mvc_Rendering_SelectList__ctor_System_Collections_IEnumerable_System_String_System_String_
+            
+
+            var userID = _userManager.GetUserId(User);
+            //var sql = "SELECT \"LMSProgramID\", \"LongName\" FROM public.\"LMSProgram\"";
+            var sql = "SELECT * FROM public.\"LMSProgram\" WHERE \"LMSProgramID\" NOT IN (SELECT \"LMSProgramID\" FROM public.\"ProgramEnrollment\" WHERE \"StudentUserId\" = {0})";
+            Console.WriteLine("SQL: ");
+            Console.WriteLine(sql);
+            var resultSet =  _context.LMSPrograms.FromSql(sql, userID).AsNoTracking();
+            ProgramSelectList = new SelectList(resultSet, "LMSProgramID", "LongName");
+
+            //var programSelectQuery = from p in _context.LMSPrograms select p;         
+            //ProgramSelectList = new SelectList(programSelectQuery, "LMSProgramID", "LongName");
+
+            //ProgramSelectList = new SelectList(_context.LMSPrograms, "LMSProgramID", "LongName");
             return Page();
         }
 
@@ -75,13 +100,6 @@ namespace lmsextreg.Pages.Enrollments
             
             Console.WriteLine("ModelState IS valid");
           
-            // var pe = new ProgramEnrollment();
-            // pe.LMSProgramID         = Int32.Parse(Input.LMSProgramID);
-            // pe.LearnerUserId        = _userManager.GetUserId(User);
-            // pe.UserCreated          = _userManager.GetUserId(User);
-            // pe.DateCreated          = DateTime.Now;
-            // pe.StatusCode           = StatusConstants.PENDING;
-
             var pe = new ProgramEnrollment
             {
                 LMSProgramID         = Int32.Parse(Input.LMSProgramID),
@@ -107,6 +125,8 @@ namespace lmsextreg.Pages.Enrollments
             return RedirectToPage("./Index");
         }        
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        
         // public IActionResult OnGet()
         // {
         // ViewData["LMSProgramID"] = new SelectList(_context.LMSPrograms, "LMSProgramID", "LongName");
