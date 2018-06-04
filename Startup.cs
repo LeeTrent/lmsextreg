@@ -14,6 +14,7 @@ using lmsextreg.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using lmsextreg.Authorization;
 
 namespace lmsextreg
@@ -51,21 +52,55 @@ namespace lmsextreg
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc()
-                .AddRazorPagesOptions(options =>
-                {
-                    options.Conventions.AuthorizeFolder("/Account/Manage");
-                    options.Conventions.AuthorizePage("/Account/Logout");
-                });
-
-            // Register no-op EmailSender used by account confirmation and password reset during development
-            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
+            /***************************************************************************************
+                
+                Require authenticated users
+                
+                Set the default authentication policy to require users to be authenticated.
+                You can opt out of authentication at the Razor Page, controller
+                or action method level with the [AllowAnonymous] attribute. 
+                
+                Setting the default authentication policy to require users to be authenticated
+                protects newly added Razor Pages and controllers. 
+                
+                Having authentication required by default is safer than relying on new controllers
+                and Razor Pages to include the [Authorize] attribute.              
+            ***************************************************************************************/
+            services.AddMvc();
+            // requires: using Microsoft.AspNetCore.Authorization;
+            //           using Microsoft.AspNetCore.Mvc.Authorization;
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });            
+            /***************************************************************** 
+                With the requirement of all users authenticated, 
+                the AuthorizeFolder and AuthorizePage calls are not required.
+            ******************************************************************/
+            // services.AddMvc()
+            //     .AddRazorPagesOptions(options =>
+            //     {
+            //         options.Conventions.AuthorizeFolder("/Account/Manage");
+            //         options.Conventions.AuthorizePage("/Account/Logout");
+            //     });
+            /*******************************************************************/
+            
+            /***************************************************************** 
+                Register no-op EmailSender used by account confirmation and password
+                reset during development
+                For more information on how to enable account confirmation and password reset,
+                please visit https://go.microsoft.com/fwlink/?LinkID=532713
+            ******************************************************************/
             services.AddSingleton<IEmailSender, EmailSender>();
 
             // Configure startup to use AuthMessageSenderOptions
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Register the authorization handlers
+            // (not being used at this time)
             // services.AddScoped<IAuthorizationHandler, StudentAuthorizationHandler>();
             // services.AddScoped<IAuthorizationHandler, ApproverAuthorizationHandler>();
         }
