@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Services;
@@ -15,6 +16,7 @@ using lmsextreg.Models;
 
 namespace lmsextreg.Pages.Account
 {
+    [AllowAnonymous]    
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
