@@ -66,8 +66,8 @@ namespace lmsextreg
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Register the authorization handlers
-            services.AddScoped<IAuthorizationHandler, StudentAuthorizationHandler>();
-            services.AddScoped<IAuthorizationHandler, ApproverAuthorizationHandler>();
+            // services.AddScoped<IAuthorizationHandler, StudentAuthorizationHandler>();
+            // services.AddScoped<IAuthorizationHandler, ApproverAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
