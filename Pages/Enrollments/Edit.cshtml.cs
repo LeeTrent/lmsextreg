@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using lmsextreg.Data;
 using lmsextreg.Models;
 
 namespace lmsextreg.Pages.Enrollments
 {
+    [Authorize(Roles = "STUDENT")]
     public class EditModel : PageModel
     {
         private readonly lmsextreg.Data.ApplicationDbContext _context;

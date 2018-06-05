@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace lmsextreg.Pages.Enrollments
 {
+    [Authorize(Roles = "STUDENT")]
     public class CreateModel : PageModel
     {
         private readonly lmsextreg.Data.ApplicationDbContext _context;
