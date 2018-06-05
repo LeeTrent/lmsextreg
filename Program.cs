@@ -32,6 +32,7 @@ namespace lmsextreg
                     var services = scope.ServiceProvider;
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     context.Database.Migrate();
+                    DataSeed.Initialize(services).Wait();
                 }
                 catch (Exception ex)
                 {
