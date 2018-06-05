@@ -32,10 +32,15 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-page="/Index">Home</a></li>
-                    @if ( User.IsInRole("STUDENT") )
+                    
+                    @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-page="/Enrollments/Index">My Programs</a></li>
+                        @if ( User.IsInRole("STUDENT") )
+                        {
+                            <li><a asp-page="/Enrollments/Index">My Programs</a></li>
+                        }
                     }
+                    
                     <li><a asp-page="/About">About</a></li>
                     <li><a asp-page="/Contact">Contact</a></li>
                 </ul>
