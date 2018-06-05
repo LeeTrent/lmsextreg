@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Services;
 using lmsextreg.Models;
+using lmsextreg.Constants;
 
 namespace lmsextreg.Pages.Account
 {
@@ -123,19 +124,25 @@ namespace lmsextreg.Pages.Account
 
                 // Create User
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                // if (result.Succeeded)
+                // {
+                //     if ( !await _roleManager.RoleExistsAsync("Learner") )
+                //     {
+                //         // Create Role
+                //         result = await _roleManager.CreateAsync(new IdentityRole("Learner"));
+                //     }
+                //     if (result.Succeeded)
+                //     {
+                //         // Create User Role 
+                //         result = await _userManager.AddToRoleAsync(user, "Learner");
+                //     }
+                // }    
                 if (result.Succeeded)
                 {
-                    if ( !await _roleManager.RoleExistsAsync("Learner") )
-                    {
-                        // Create Role
-                        result = await _roleManager.CreateAsync(new IdentityRole("Learner"));
-                    }
-                    if (result.Succeeded)
-                    {
-                        // Create User Role 
-                        result = await _userManager.AddToRoleAsync(user, "Learner");
-                    }
-                }    
+                    // Create User Role 
+                    result = await _userManager.AddToRoleAsync(user, RoleConstants.STUDENT);
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
