@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using lmsextreg.Data;
 using lmsextreg.Models;
 
@@ -15,10 +16,13 @@ namespace lmsextreg.Pages.Enrollments
     public class DeleteModel : PageModel
     {
         private readonly lmsextreg.Data.ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DeleteModel(lmsextreg.Data.ApplicationDbContext context)
+        public DeleteModel(lmsextreg.Data.ApplicationDbContext context, 
+                            UserManager<ApplicationUser> userMgr)
         {
             _context = context;
+            _userManager = userMgr;
         }
 
         [BindProperty]
@@ -31,9 +35,15 @@ namespace lmsextreg.Pages.Enrollments
                 return NotFound();
             }
 
-            ProgramEnrollment = await _context.ProgramEnrollments
-                .Include(p => p.LMSProgram).SingleOrDefaultAsync(m => m.ProgramEnrollmentID == id);
+            // ProgramEnrollment = await _context.ProgramEnrollments
+            //     .Include(p => p.LMSProgram).SingleOrDefaultAsync(m => m.ProgramEnrollmentID == id);
 
+            var loggedInUserID = _userManager.GetUserId(User);
+            ProgramEnrollment = await _context.ProgramEnrollments
+                .Where(pe => pe.StudentUserId == loggedInUserID && pe.ProgramEnrollmentID == id) 
+                .Include(p => p.LMSProgram)
+                .SingleOrDefaultAsync();                   
+                  
             if (ProgramEnrollment == null)
             {
                 return NotFound();
