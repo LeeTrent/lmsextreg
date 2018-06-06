@@ -10,19 +10,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using lmsextreg.Data;
+using lmsextreg.Constants;
 
 namespace lmsextreg
 {
     public class Program
     {
-        // public static void Main(string[] args)
-        // {
-        //     BuildWebHost(args).Run();
-        // }
-
         public static void Main(string[] args)
         {
-            //BuildWebHost(args).Run();
             var host = BuildWebHost(args);
 
             using (var scope = host.Services.CreateScope())
@@ -32,18 +27,18 @@ namespace lmsextreg
                     var services = scope.ServiceProvider;
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     context.Database.Migrate();
-                    DataSeed.Initialize(services).Wait();
+
+                    var config = host.Services.GetRequiredService<IConfiguration>();
+                    var tempPW = config[MiscConstants.SEED_TEMP_PW];
+                    DataSeed.Initialize(services, tempPW).Wait();
                 }
                 catch (Exception ex)
                 {
                     Console.Write(ex.StackTrace);
                 }
             }
-
             host.Run();
         }
-
-
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
