@@ -94,10 +94,17 @@ namespace lmsextreg.Pages.Account
             public string SubAgencyID { get; set; }            
         }
 
+        // public void OnGet(string returnUrl = null)
+        // {
+        //     AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
+        //     SubAgencySelectList = new SelectList(_dbContext.SubAgencies, "SubAgencyID", "SubAgencyName");
+        //     ReturnUrl           = returnUrl;
+        // }
+
         public void OnGet(string returnUrl = null)
         {
-            AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
-            SubAgencySelectList = new SelectList(_dbContext.SubAgencies, "SubAgencyID", "SubAgencyName");
+            AgencySelectList    = new SelectList(_dbContext.Agencies.OrderBy(a => a.DisplayOrder), "AgencyID", "AgencyName");
+            SubAgencySelectList = new SelectList(_dbContext.SubAgencies.OrderBy(sa => sa.DisplayOrder), "SubAgencyID", "SubAgencyName");
             ReturnUrl           = returnUrl;
         }
 
