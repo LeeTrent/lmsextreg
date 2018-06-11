@@ -29,7 +29,7 @@ namespace lmsextreg.Models
         /////////////////////////////////////////////////////////////
         // LearnerUserId:
         // Same value as the 'Id' column in the 'AspNetUser' table
-        // Foreign-key reference to ApplicationUser for Learner
+        // Foreign-key reference to ApplicationUser for STUDENT
         ////////////////////////////////////////////////////////////
         [Required]
         [Display(Name = "Student")]
@@ -37,7 +37,7 @@ namespace lmsextreg.Models
 
         //////////////////////////////////////////////////////////////
         // Program:
-        // Navigation property to ApplicationUser entity for Learner
+        // Navigation property to ApplicationUser entity for STUDENT
         /////////////////////////////////////////////////////////////
         [Display(Name = "Student")]
         public ApplicationUser Student { get; set; }
