@@ -19,7 +19,8 @@ namespace lmsextreg.Data
             await EnsureRoles(svcProvider);
             await EnsurePrograms(dbContext);
             await EnsureApprovers(svcProvider, tempPW); 
-
+            await EnsureStudents(svcProvider, tempPW); 
+            
             Console.WriteLine("DataSeed.Initialize: END");
         }
 
@@ -89,25 +90,25 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureApprovers: BEGIN");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "PA");
+            await EnsureApprover(svcProvider, "ProgramApproverPA1@state.gov", tempPW, "PA");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "PB");
-            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB1@state.gov", tempPW, "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB2@state.gov", tempPW, "PB");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "PC");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPC1@state.gov", tempPW, "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC2@state.gov", tempPW, "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC3@state.gov", tempPW, "PC");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "PD");                                                
-            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD1@state.gov", tempPW, "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD2@state.gov", tempPW, "PD");                                                
+            await EnsureApprover(svcProvider, "ProgramApproverPD3@state.gov", tempPW, "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD4@state.gov", tempPW, "PD");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "PE");                                                                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE1@state.gov", tempPW, "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE2@state.gov", tempPW, "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE3@state.gov", tempPW, "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE4@state.gov", tempPW, "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE5@state.gov", tempPW, "PE");                                                                        
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }
@@ -147,71 +148,56 @@ namespace lmsextreg.Data
                     ApproverUserId = user.Id
                 };
 
-                // Console.WriteLine("program.LMSProgramI: " + program.LMSProgramID);
-                // Console.WriteLine("user.Id: " + user.Id);
-                // Console.WriteLine("programApprover description: ");
-                // Console.WriteLine(programApprover.ToString());
-
                 dbContext.ProgramApprovers.Add(programApprover);
                 await dbContext.SaveChangesAsync();
             }
              Console.WriteLine("DataSeed.EnsureApprover: END");            
-
         }
 
-        // private static async Task<IdentityResult> EnsureUserRole(IServiceProvider svcProvider, string roleName, string userID)
-        // {
-        //     Console.WriteLine("DataSeed.EnsureUserRole: BEGIN");
+        private static async Task EnsureStudents(IServiceProvider svcProvider, string tempPW)
+        {
+            Console.WriteLine("DataSeed.EnsureStudents: BEGIN");
 
-        //     var userMgr = svcProvider.GetService<UserManager<ApplicationUser>>();
-        //     var user = await userMgr.FindByIdAsync(userID);
+            await EnsureStudent(svcProvider, "student01@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student02@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student03@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student04@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student05@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student06@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student07@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student08@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student09@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student10@state.gov", tempPW);
 
-        //     Console.WriteLine("DataSeed.EnsureUserRole: END");
-            
-        //     return await userMgr.AddToRoleAsync(user, roleName);
-        // }
+            Console.WriteLine("DataSeed.EnsureStudents: END");
+        }
 
-    //   private static async Task<string> EnsureUser(IServiceProvider svcProvider, string userName, string tempPW)
-    //     {
-    //         Console.WriteLine("DataSeed.EnsureUser: BEGIN");
-    //         Console.WriteLine("userName: " + userName);
-    //         Console.WriteLine("tempPW: " + tempPW);
+        private static async Task EnsureStudent(IServiceProvider svcProvider, string userName, string tempPW)
+        {
+            Console.WriteLine("DataSeed.EnsureStudent: BEGIN");
 
-    //         var userMgr = svcProvider.GetService<UserManager<ApplicationUser>>();
-            
-    //         var user = await userMgr.FindByNameAsync(userName);
-    //         if (user == null)
-    //         {
-    //             Console.WriteLine(userName + " not found");
+            ////////////////////////////////////////////////////////////////////
+            // Create Student
+            ////////////////////////////////////////////////////////////////////            
+            var userMgr = svcProvider.GetService<UserManager<ApplicationUser>>();
+            var user = await userMgr.FindByNameAsync(userName);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = userName,
+                    EmailConfirmed = true
+                };
+                
+                await userMgr.CreateAsync(user, tempPW);
+                
+                ////////////////////////////////////////////////////////////////////
+                // Assign Student Role to Student
+                ////////////////////////////////////////////////////////////////////            
+                await userMgr.AddToRoleAsync(user, RoleConstants.STUDENT);       
 
-    //             // user = new ApplicationUser
-    //             // {
-    //             //     UserName = userName,
-    //             //     DateRegistered  = DateTime.Now,
-    //             //     DateExpired     = DateTime.Now.AddDays(365)
-    //             // };
-            
-    //             user = new ApplicationUser
-    //             {
-    //                 UserName = userName
-    //             };
-
-    //             try
-    //             {
-    //                 await userMgr.CreateAsync(user, tempPW);
-    //             }
-    //             catch(Exception exc)
-    //             {
-    //                 Console.WriteLine("BEGIN: exception message");
-    //                 Console.WriteLine(exc.Message);
-    //                 Console.WriteLine("END: exception message");
-    //             }    
-    //         }
-            
-    //         Console.WriteLine("DataSeed.EnsureUser: END");
-
-    //         return user.Id;
-    //     }
-
+                Console.WriteLine("DataSeed.EnsureStudent: END");     
+            }
+        }
      }
 }
