@@ -17,6 +17,7 @@ namespace lmsextreg.Data
             var dbContext = svcProvider.GetRequiredService<ApplicationDbContext>();
 
             await EnsureRoles(svcProvider);
+            await EnsureEnrollmentStatuses(dbContext);
             await EnsurePrograms(dbContext);
             await EnsureApprovers(svcProvider, tempPW); 
             await EnsureStudents(svcProvider, tempPW); 
@@ -52,6 +53,36 @@ namespace lmsextreg.Data
 
             return IR;
         }
+        
+        private static async Task EnsureEnrollmentStatuses(ApplicationDbContext dbContext)
+        {
+            Console.WriteLine("DataSeed.EnsureEnrollmentStatuses: BEGIN");
+
+            await EnsureEnrollmentStatus(dbContext, "PENDING", "Pending");
+            await EnsureEnrollmentStatus(dbContext, "APPROVED", "Approved");
+            await EnsureEnrollmentStatus(dbContext, "DENIED", "Denied");
+
+            Console.WriteLine("DataSeed.EnsureEnrollmentStatuses: END");
+        }        
+        private static async Task EnsureEnrollmentStatus(ApplicationDbContext dbContext, string statusCode, string statusName)
+        {
+            Console.WriteLine("DataSeed.EnsureEnrollmentStatus: BEGIN");
+
+            var enrollmentStatus = await dbContext.EnrollmentStatuses.FirstOrDefaultAsync( es => es.StatusCode == statusCode );
+            if ( enrollmentStatus == null )
+            {
+                enrollmentStatus = new EnrollmentStatus
+                {
+                    StatusCode = statusCode,
+                    StatusName = statusName
+                };
+
+                dbContext.EnrollmentStatuses.Add(enrollmentStatus);
+                await dbContext.SaveChangesAsync();
+            }
+
+            Console.WriteLine("DataSeed.EnsureEnrollmentStatus: END");
+        }        
 
         private static async Task EnsurePrograms(ApplicationDbContext dbContext)
         {
@@ -90,30 +121,31 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureApprovers: BEGIN");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPA1@state.gov", tempPW, "PA");
+            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "GS", "GS30", "PA" );
 
-            await EnsureApprover(svcProvider, "ProgramApproverPB1@state.gov", tempPW, "PB");
-            await EnsureApprover(svcProvider, "ProgramApproverPB2@state.gov", tempPW, "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "GS", "GS30", "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "GS", "GS30", "PB");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPC1@state.gov", tempPW, "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC2@state.gov", tempPW, "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC3@state.gov", tempPW, "PC");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "GS", "GS30", "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "GS", "GS30", "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "GS", "GS30", "PC");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPD1@state.gov", tempPW, "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD2@state.gov", tempPW, "PD");                                                
-            await EnsureApprover(svcProvider, "ProgramApproverPD3@state.gov", tempPW, "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD4@state.gov", tempPW, "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "GS", "GS03", "PD");                                                
+            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "GS", "GS03", "PD");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPE1@state.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE2@state.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE3@state.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE4@state.gov", tempPW, "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@state.gov", tempPW, "PE");                                                                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "GS", "GS03", "PE");                                                                        
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }
   
-        private static async Task EnsureApprover(IServiceProvider svcProvider, string userName, string tempPW, string programShortName)
+        private static async Task EnsureApprover(IServiceProvider svcProvider, string userName, string tempPW, 
+                                                    string agencyID, string subagencyID, string programShortName)
         {
              Console.WriteLine("DataSeed.EnsureApprover: BEGIN");
 
@@ -126,6 +158,11 @@ namespace lmsextreg.Data
             {
                 user = new ApplicationUser
                 {
+                    // UserName = userName,
+                    // EmailConfirmed = true,
+                    // AgencyID = agencyID,
+                    // SubAgencyID = subagencyID
+
                     UserName = userName,
                     EmailConfirmed = true
                 };
@@ -158,21 +195,22 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureStudents: BEGIN");
 
-            await EnsureStudent(svcProvider, "student01@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student02@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student03@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student04@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student05@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student06@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student07@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student08@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student09@state.gov", tempPW);
-            await EnsureStudent(svcProvider, "student10@state.gov", tempPW);
+            await EnsureStudent(svcProvider, "student01@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student02@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student03@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student04@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student05@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student06@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student07@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student08@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "ST", "ST00");
 
             Console.WriteLine("DataSeed.EnsureStudents: END");
         }
 
-        private static async Task EnsureStudent(IServiceProvider svcProvider, string userName, string tempPW)
+        private static async Task EnsureStudent(IServiceProvider svcProvider, string userName, string tempPW,
+                                                    string agencyID, string subagencyID)
         {
             Console.WriteLine("DataSeed.EnsureStudent: BEGIN");
 
@@ -185,8 +223,13 @@ namespace lmsextreg.Data
             {
                 user = new ApplicationUser
                 {
+                    // UserName = userName,
+                    // EmailConfirmed = true,
+                    // AgencyID = agencyID,
+                    // SubAgencyID = subagencyID
+
                     UserName = userName,
-                    EmailConfirmed = true
+                    EmailConfirmed = true                    
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);
