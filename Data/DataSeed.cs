@@ -195,22 +195,22 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureStudents: BEGIN");
 
-            await EnsureStudent(svcProvider, "student01@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student02@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student03@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student04@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student05@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student06@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student07@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student08@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "ST", "ST00");
-            await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "ST", "ST00");
+            await EnsureStudent(svcProvider, "student01@state.gov", tempPW, "Student", "#1", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student02@state.gov", tempPW, "Student", "#2", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student03@state.gov", tempPW, "Student", "#3", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student04@state.gov", tempPW, "Student", "#4", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student05@state.gov", tempPW, "Student", "#5", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student06@state.gov", tempPW, "Student", "#6", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student07@state.gov", tempPW, "Student", "#7", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student08@state.gov", tempPW, "Student", "#8", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "Student", "#9", "ST", "ST00");
+            await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "Student", "#10", "ST", "ST00");
 
             Console.WriteLine("DataSeed.EnsureStudents: END");
         }
 
         private static async Task EnsureStudent(IServiceProvider svcProvider, string userName, string tempPW,
-                                                    string agencyID, string subagencyID)
+                                                    string firstName, string lastName, string agencyID, string subagencyID)
         {
             Console.WriteLine("DataSeed.EnsureStudent: BEGIN");
 
@@ -229,7 +229,9 @@ namespace lmsextreg.Data
                     // SubAgencyID = subagencyID
 
                     UserName = userName,
-                    EmailConfirmed = true                    
+                    EmailConfirmed = true,   
+                    FirstName = firstName,
+                    LastName = lastName             
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);

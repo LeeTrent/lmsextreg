@@ -72,9 +72,9 @@ namespace lmsextreg.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                Console.WriteLine("Input.Email: " + Input.Email);
-                Console.WriteLine("Input.Password: " + Input.Password);
-                Console.WriteLine("Input.RememberMe: " + Input.RememberMe);                
+                // Console.WriteLine("Input.Email: " + Input.Email);
+                // Console.WriteLine("Input.Password: " + Input.Password);
+                // Console.WriteLine("Input.RememberMe: " + Input.RememberMe);                
 
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
