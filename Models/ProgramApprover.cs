@@ -19,7 +19,7 @@ namespace lmsextreg.Models
         // Program:
         // Navigation property to ApplicationUser entity for APPROVER
         /////////////////////////////////////////////////////////////
-        // [Display(Name = "Approver")]
-        // public ApplicationUser Approver { get; set; }        
+        [Display(Name = "Approver")]
+        public ApplicationUser Approver { get; set; }        
     }
 }

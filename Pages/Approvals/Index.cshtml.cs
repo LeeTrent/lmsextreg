@@ -54,13 +54,31 @@ namespace lmsextreg.Pages.Approvals
             //         .ThenInclude(p => p.ProgramApprovers)
             //     .ToListAsync();
 
+                // ProgramEnrollment = await _dbContext.ProgramEnrollments
+                // .Include( p => p.LMSProgram)
+                // .Include( p => p.EnrollmentStatus)
+                // .Include( p => p.Student)
+                // .Include( p => p.Approver)
+                // .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
+                // .ToListAsync();    
+
                 ProgramEnrollment = await _dbContext.ProgramEnrollments
-                .Include(p => p.LMSProgram)
-                .Include(p => p.EnrollmentStatus)
-                .Include(p => p.Student)
-                .OrderBy(p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
-                .ToListAsync();                
+                .Include( p => p.LMSProgram).ThenInclude(p => p.ProgramApprovers)
+                .Include( p => p.EnrollmentStatus)
+                .Include( p => p.Student)
+                .Include( p => p.Approver)
+                .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
+                .ToListAsync();                             
                 
+                // ProgramEnrollment = await _dbContext.ProgramEnrollments
+                // .Include( p => p.LMSProgram)
+                //     .ThenInclude(p => p.ProgramApprovers).Where(p => p.ApproverUserId == loggedInUserID)
+                // .Include( p => p.EnrollmentStatus)
+                // .Include( p => p.Student)
+                // .Include( p => p.Approver)
+                // .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
+                // .ToListAsync();    
+
                 Console.WriteLine("ProgramEnrollment.Count: " + ProgramEnrollment.Count);
             }
             

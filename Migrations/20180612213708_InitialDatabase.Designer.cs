@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180530164040_InitialDatabase")]
+    [Migration("20180612213708_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,7 +147,11 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("ApproverUserId");
 
+                    b.Property<string>("ApproverId");
+
                     b.HasKey("LMSProgramID", "ApproverUserId");
+
+                    b.HasIndex("ApproverId");
 
                     b.ToTable("ProgramApprover");
                 });
@@ -156,6 +160,8 @@ namespace lmsextreg.Migrations
                 {
                     b.Property<int>("ProgramEnrollmentID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApproverId");
 
                     b.Property<string>("ApproverUserId");
 
@@ -177,6 +183,8 @@ namespace lmsextreg.Migrations
                     b.Property<string>("UserLastUpdated");
 
                     b.HasKey("ProgramEnrollmentID");
+
+                    b.HasIndex("ApproverId");
 
                     b.HasIndex("StatusCode");
 
@@ -331,6 +339,10 @@ namespace lmsextreg.Migrations
 
             modelBuilder.Entity("lmsextreg.Models.ProgramApprover", b =>
                 {
+                    b.HasOne("lmsextreg.Data.ApplicationUser", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId");
+
                     b.HasOne("lmsextreg.Models.LMSProgram")
                         .WithMany("ProgramApprovers")
                         .HasForeignKey("LMSProgramID")
@@ -339,6 +351,10 @@ namespace lmsextreg.Migrations
 
             modelBuilder.Entity("lmsextreg.Models.ProgramEnrollment", b =>
                 {
+                    b.HasOne("lmsextreg.Data.ApplicationUser", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId");
+
                     b.HasOne("lmsextreg.Models.LMSProgram", "LMSProgram")
                         .WithMany()
                         .HasForeignKey("LMSProgramID")

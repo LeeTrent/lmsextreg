@@ -20,14 +20,14 @@ namespace lmsextreg.Models
         public int LMSProgramID { get; set; }
 
         ////////////////////////////////////////////////////////////
-        // Program:
+        // LMSProgram:
         // Navigation property to Program entity
         ///////////////////////////////////////////////////////////
         [Display(Name = "Program")]
         public LMSProgram LMSProgram { get; set; }
 
         /////////////////////////////////////////////////////////////
-        // LearnerUserId:
+        // StudentUserId:
         // Same value as the 'Id' column in the 'AspNetUser' table
         // Foreign-key reference to ApplicationUser for STUDENT
         ////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ namespace lmsextreg.Models
         public string StudentUserId { get; set; }
 
         //////////////////////////////////////////////////////////////
-        // Program:
+        // Student:
         // Navigation property to ApplicationUser entity for STUDENT
         /////////////////////////////////////////////////////////////
         [Display(Name = "Student")]
@@ -46,8 +46,15 @@ namespace lmsextreg.Models
         // ApproverUserId:
         // Same value as the 'Id' column in the 'AspNetUser' table
         ///////////////////////////////////////////////////////////
-        [Display(Name = "Enrollment Approver")]
+        [Display(Name = "Approver")]
         public string ApproverUserId { get; set; }
+
+        ///////////////////////////////////////////////////////////////
+        // Approver:
+        // Navigation property to ApplicationUser entity for APPROVER
+        //////////////////////////////////////////////////////////////
+        [Display(Name = "Approver")]
+        public ApplicationUser Approver { get; set; }
 
         [Required]
         public string StatusCode { get; set; }
