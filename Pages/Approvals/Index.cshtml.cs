@@ -35,49 +35,26 @@ namespace lmsextreg.Pages.Approvals
             if ( User.IsInRole(RoleConstants.APPROVER))
             {
                 var loggedInUserID = _userManager.GetUserId(User);
-                
-                // ProgramEnrollment = await _dbContext.ProgramEnrollments
-                // .Include(pe => pe.LMSProgram)
-                //     .ThenInclude(p => p.ProgramApprovers)
-                //         .ThenInclude(pa => pa.ApproverUserId == loggedInUserID)
-                // .ToListAsync();
+ 
+                var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
+                        + " WHERE \"LMSProgramID\" " 
+                        + " IN "
+                        + " ( "
+                        + "   SELECT \"LMSProgramID\" "
+                        + "   FROM public.\"ProgramApprover\" "
+		                + "   WHERE \"ApproverUserId\" = {0} "
+	                    + " ) ";
 
-            // ProgramEnrollment = await _dbContext.ProgramEnrollments
-            //     .Where(p => p.StudentUserId == LoggedInUser.Id)
-            //     .Include(p => p.LMSProgram)
-            //     .Include(p => p.EnrollmentStatus)
-            //     .Include(p => p.Student)
-            //     .ToListAsync();
-
-            //     ProgramEnrollment = await _dbContext.ProgramEnrollments
-            //     .Include(pe => pe.LMSProgram)
-            //         .ThenInclude(p => p.ProgramApprovers)
-            //     .ToListAsync();
-
-                // ProgramEnrollment = await _dbContext.ProgramEnrollments
-                // .Include( p => p.LMSProgram)
-                // .Include( p => p.EnrollmentStatus)
-                // .Include( p => p.Student)
-                // .Include( p => p.Approver)
-                // .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
-                // .ToListAsync();    
-
-                ProgramEnrollment = await _dbContext.ProgramEnrollments
-                .Include( p => p.LMSProgram).ThenInclude(p => p.ProgramApprovers)
-                .Include( p => p.EnrollmentStatus)
-                .Include( p => p.Student)
-                .Include( p => p.Approver)
-                .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
-                .ToListAsync();                             
-                
-                // ProgramEnrollment = await _dbContext.ProgramEnrollments
-                // .Include( p => p.LMSProgram)
-                //     .ThenInclude(p => p.ProgramApprovers).Where(p => p.ApproverUserId == loggedInUserID)
-                // .Include( p => p.EnrollmentStatus)
-                // .Include( p => p.Student)
-                // .Include( p => p.Approver)
-                // .OrderBy( p => p.LMSProgram.LongName).ThenBy(p => p.Student.FullName).ThenBy(p => p.EnrollmentStatus.StatusCode)
-                // .ToListAsync();    
+            ProgramEnrollment  = await _dbContext.ProgramEnrollments
+                                .FromSql(sql, loggedInUserID)
+                                .Include( pe =>  pe.LMSProgram)
+                                .Include ( pe => pe.Student)
+                                .Include( pe => pe.EnrollmentStatus)
+                                .Include( pe => pe.Approver)
+                                .OrderBy( pe => pe.LMSProgram.LongName)
+                                    .ThenBy(pe => pe.Student.FullName)
+                                    .ThenBy(pe => pe.EnrollmentStatus.StatusCode)
+                                .ToListAsync();
 
                 Console.WriteLine("ProgramEnrollment.Count: " + ProgramEnrollment.Count);
             }

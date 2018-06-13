@@ -49,7 +49,7 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    <a asp-page="./Delete"  asp-route-id="@item.ProgramEnrollmentID">Withdraw</a>
+                    <a asp-page="./Edit"  asp-route-id="@item.ProgramEnrollmentID">Approve / Deny</a>
                 </td>
             </tr>
         }
