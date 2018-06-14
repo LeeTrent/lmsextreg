@@ -4,25 +4,26 @@ namespace lmsextreg.Models
 {
     public class EnrollmentHistory
     {
+        ////////////////////////////////////////////////////////////
+        // EnrollmenHistoryID:
+        // Primary Key
+        ///////////////////////////////////////////////////////////
         [Required]
         public int EnrollmenHistoryID { get; set; }
         
         ////////////////////////////////////////////////////////////
-        // ProgramID:
-        // Foreign-key reference to Program table
+        // ProgramEnrollmentID:
+        // Foreign-key reference to ProgramEnrollment table
         ///////////////////////////////////////////////////////////
         [Required]
-        public int ProgramID { get; set; }
-
+        public int ProgramEnrollmentID { get; set; }
+      
         ////////////////////////////////////////////////////////////
-        // Program:
-        // Navigation property to Program entity
-        ///////////////////////////////////////////////////////////
-        public Program Program { get; set; }      
-
+        // StatusTransitionID:
+        // Foreign-key reference to StatusTransition table
+        ///////////////////////////////////////////////////////////      
         [Required]
         public int StatusTransitionID { get; set; }
-        public StatusTransition StatusTransition { get; set; }  
 
         /////////////////////////////////////////////////////////////
         // ActorUserId:

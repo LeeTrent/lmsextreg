@@ -14,7 +14,9 @@ namespace lmsextreg.Models
         [Required]        
         public string ActionLabel { get; set; }
     
+        ///////////////////////////////////////////////
         // Navigation Properties
+        ///////////////////////////////////////////////        
        public EnrollmentStatus FromStatus {get; set; }
         [Required]
         public EnrollmentStatus ToStatus { get; set; }        
