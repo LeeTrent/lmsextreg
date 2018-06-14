@@ -33,6 +33,28 @@ namespace lmsextreg.Pages.Approvals
                 return NotFound();
             }
 
+            ////////////////////////////////////////////////////////////
+            // Step #1:
+            // Check to see if records exists
+            ////////////////////////////////////////////////////////////
+            ProgramEnrollment = await _dbContext.ProgramEnrollments
+                              .Where(pe => pe.ProgramEnrollmentID == id) 
+                              .SingleOrDefaultAsync();     
+
+            ////////////////////////////////////////////////////////////
+            // Return "Not Found" if record doesn't exist
+            ////////////////////////////////////////////////////////////
+            if (ProgramEnrollment == null)
+            {
+                return NotFound();
+            }                                     
+
+            ////////////////////////////////////////////////////////////
+            // Step #2:
+            // Now that record exists, make sure that the logged-in user
+            // is authorized to edit (approver/deny) enrollment
+            // applications for this particular LMS Program.
+            ////////////////////////////////////////////////////////////
             var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
                     + "  WHERE  \"ProgramEnrollmentID\" = {0} "
                     + "    AND  \"LMSProgramID\" " 
@@ -43,24 +65,25 @@ namespace lmsextreg.Pages.Approvals
                     + "         WHERE \"ApproverUserId\" = {1} "
                     + "      ) ";
 
-            // ProgramEnrollment = await _dbContext.ProgramEnrollments
-            //                   .Where(pe => pe.ProgramEnrollmentID == id) 
-            //                   .Include(pe => pe.LMSProgram)
-            //                   .Include(pe => pe.Student)
-            //                   .Include(pe => pe.EnrollmentStatus)
-            //                   .SingleOrDefaultAsync();
-
+            ProgramEnrollment = null;
             ProgramEnrollment = await _dbContext.ProgramEnrollments
                                 .FromSql(sql, id, _userManager.GetUserId(User))
                                 .Include(pe => pe.LMSProgram)
                                 .Include(pe => pe.Student)
+                                    .ThenInclude(s => s.SubAgency)
+                                    .ThenInclude(sa => sa.Agency)
                                 .Include(pe => pe.EnrollmentStatus)
                                 .SingleOrDefaultAsync();
 
-
+            /////////////////////////////////////////////////////////////
+            // We already know that record exists from Step #1 so if we
+            // get a "Not Found" in Step #2, we know it's because the 
+            // logged-in user is not authorized to edit (approve/deny)
+            // enrollment applications for this LMS Program.
+            /////////////////////////////////////////////////////////////
             if (ProgramEnrollment == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
             
             return Page();                              
