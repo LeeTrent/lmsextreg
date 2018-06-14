@@ -10,8 +10,7 @@ namespace lmsextreg.Models
         // ProgramEnrollmentID:
         // Primary-key (auto-generated)
         ////////////////////////////////////////////////////////////
-        public int ProgramEnrollmentID { get; set; 
-        }
+        public int ProgramEnrollmentID { get; set; }
         ////////////////////////////////////////////////////////////
         // LMSProgramID:
         // Foreign-key reference to Program table
