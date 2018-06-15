@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +88,37 @@ namespace lmsextreg.Pages.Approvals
             }
             
             return Page();                              
+        }
+
+        public async Task<IActionResult> OnPostAsync(int id, string status)
+        {
+            Console.WriteLine("Approvals.Edit.OnPost(): BEGIN");
+            Console.WriteLine("id: " + id);
+            Console.WriteLine("status: " + status);
+
+            ////////////////////////////////////////////////////////////
+            // Step #1:
+            // Check to see if records exists
+            ////////////////////////////////////////////////////////////
+            ProgramEnrollment = await _dbContext.ProgramEnrollments
+                              .Where(pe => pe.ProgramEnrollmentID == id) 
+                              .SingleOrDefaultAsync();     
+
+            ////////////////////////////////////////////////////////////
+            // Return "Not Found" if record doesn't exist
+            ////////////////////////////////////////////////////////////
+            if (ProgramEnrollment == null)
+            {
+                Console.WriteLine("ProgramEnrollment NOT FOUND in Step# 1");
+                return NotFound();
+            } 
+
+            ProgramEnrollment.StatusCode = status;
+            ProgramEnrollment.ApproverUserId = _userManager.GetUserId(User);
+            _dbContext.ProgramEnrollments.Update(ProgramEnrollment);
+            await _dbContext.SaveChangesAsync();
+            
+            return RedirectToPage("./Index");          
         }
 
     }
