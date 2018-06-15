@@ -11,6 +11,6 @@ namespace lmsextreg.Models
         public string StatusCode { get; set; }
         [Required]
          [Display(Name = "Status")]
-        public string StatusName { get; set; }
+        public string StatusLabel { get; set; }
     }
 }

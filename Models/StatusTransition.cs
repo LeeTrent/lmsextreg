@@ -10,9 +10,9 @@ namespace lmsextreg.Models
         public string FromStatusCode { get; set; }
         public string ToStatusCode { get; set; }
         [Required]
-        public string ActionCode { get; set; }
+        public string TransitionCode { get; set; }
         [Required]        
-        public string ActionLabel { get; set; }
+        public string TransitionLabel { get; set; }
     
         ///////////////////////////////////////////////
         // Navigation Properties

@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180612213708_InitialDatabase")]
+    [Migration("20180615141557_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,17 +109,44 @@ namespace lmsextreg.Migrations
                     b.ToTable("Agency");
                 });
 
+            modelBuilder.Entity("lmsextreg.Models.EnrollmentHistory", b =>
+                {
+                    b.Property<int>("EnrollmentHistoryID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ActorRemarks");
+
+                    b.Property<string>("ActorUserId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<int>("ProgramEnrollmentID");
+
+                    b.Property<int>("StatusTransitionID");
+
+                    b.HasKey("EnrollmentHistoryID");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("ProgramEnrollmentID");
+
+                    b.HasIndex("StatusTransitionID");
+
+                    b.ToTable("EnrollmentHistory");
+                });
+
             modelBuilder.Entity("lmsextreg.Models.EnrollmentStatus", b =>
                 {
                     b.Property<string>("StatusCode")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("StatusName")
+                    b.Property<string>("StatusLabel")
                         .IsRequired();
 
                     b.HasKey("StatusCode");
 
-                    b.HasIndex("StatusName")
+                    b.HasIndex("StatusLabel")
                         .IsUnique();
 
                     b.ToTable("EnrollmentStatus");
@@ -147,11 +174,9 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("ApproverUserId");
 
-                    b.Property<string>("ApproverId");
-
                     b.HasKey("LMSProgramID", "ApproverUserId");
 
-                    b.HasIndex("ApproverId");
+                    b.HasIndex("ApproverUserId");
 
                     b.ToTable("ProgramApprover");
                 });
@@ -160,8 +185,6 @@ namespace lmsextreg.Migrations
                 {
                     b.Property<int>("ProgramEnrollmentID")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ApproverId");
 
                     b.Property<string>("ApproverUserId");
 
@@ -184,7 +207,7 @@ namespace lmsextreg.Migrations
 
                     b.HasKey("ProgramEnrollmentID");
 
-                    b.HasIndex("ApproverId");
+                    b.HasIndex("ApproverUserId");
 
                     b.HasIndex("StatusCode");
 
@@ -194,6 +217,33 @@ namespace lmsextreg.Migrations
                         .IsUnique();
 
                     b.ToTable("ProgramEnrollment");
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.StatusTransition", b =>
+                {
+                    b.Property<int>("StatusTransitionID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FromStatusCode")
+                        .IsRequired();
+
+                    b.Property<string>("ToStatusCode")
+                        .IsRequired();
+
+                    b.Property<string>("TransitionCode")
+                        .IsRequired();
+
+                    b.Property<string>("TransitionLabel")
+                        .IsRequired();
+
+                    b.HasKey("StatusTransitionID");
+
+                    b.HasIndex("ToStatusCode");
+
+                    b.HasIndex("FromStatusCode", "ToStatusCode")
+                        .IsUnique();
+
+                    b.ToTable("StatusTransition");
                 });
 
             modelBuilder.Entity("lmsextreg.Models.SubAgency", b =>
@@ -337,13 +387,32 @@ namespace lmsextreg.Migrations
                         .HasForeignKey("SubAgencyID");
                 });
 
+            modelBuilder.Entity("lmsextreg.Models.EnrollmentHistory", b =>
+                {
+                    b.HasOne("lmsextreg.Data.ApplicationUser", "Actor")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Models.ProgramEnrollment")
+                        .WithMany("EnrollmentHistory")
+                        .HasForeignKey("ProgramEnrollmentID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Models.StatusTransition", "StatusTransition")
+                        .WithMany()
+                        .HasForeignKey("StatusTransitionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("lmsextreg.Models.ProgramApprover", b =>
                 {
                     b.HasOne("lmsextreg.Data.ApplicationUser", "Approver")
                         .WithMany()
-                        .HasForeignKey("ApproverId");
+                        .HasForeignKey("ApproverUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("lmsextreg.Models.LMSProgram")
+                    b.HasOne("lmsextreg.Models.LMSProgram", "LMSProgram")
                         .WithMany("ProgramApprovers")
                         .HasForeignKey("LMSProgramID")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -353,7 +422,7 @@ namespace lmsextreg.Migrations
                 {
                     b.HasOne("lmsextreg.Data.ApplicationUser", "Approver")
                         .WithMany()
-                        .HasForeignKey("ApproverId");
+                        .HasForeignKey("ApproverUserId");
 
                     b.HasOne("lmsextreg.Models.LMSProgram", "LMSProgram")
                         .WithMany()
@@ -368,6 +437,19 @@ namespace lmsextreg.Migrations
                     b.HasOne("lmsextreg.Data.ApplicationUser", "Student")
                         .WithMany()
                         .HasForeignKey("StudentUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("lmsextreg.Models.StatusTransition", b =>
+                {
+                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "FromStatus")
+                        .WithMany()
+                        .HasForeignKey("FromStatusCode")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("lmsextreg.Models.EnrollmentStatus", "ToStatus")
+                        .WithMany()
+                        .HasForeignKey("ToStatusCode")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

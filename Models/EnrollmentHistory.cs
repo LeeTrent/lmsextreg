@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using lmsextreg.Data;
 
 namespace lmsextreg.Models
 {
@@ -9,7 +11,7 @@ namespace lmsextreg.Models
         // Primary Key
         ///////////////////////////////////////////////////////////
         [Required]
-        public int EnrollmenHistoryID { get; set; }
+        public int EnrollmentHistoryID { get; set; }
         
         ////////////////////////////////////////////////////////////
         // ProgramEnrollmentID:
@@ -33,5 +35,21 @@ namespace lmsextreg.Models
         public string ActorUserId { get; set; }
 
         public string ActorRemarks { get; set; }
+
+        ////////////////////////////////////////////////////////////
+        // DateCreated:
+        // Date that row was originally inserted
+        ///////////////////////////////////////////////////////////
+        [Required]
+         public DateTime DateCreated { get; set; }
+
+        ///////////////////////////////////////////////
+        // Navigation Properties
+        ///////////////////////////////////////////////        
+        //public ProgramEnrollment ProgramEnrollment {get; set; }
+    
+        public StatusTransition StatusTransition { get; set; }  
+
+        public ApplicationUser Actor {get; set; }
     }
 }

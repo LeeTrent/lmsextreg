@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using lmsextreg.Data;
 
@@ -60,6 +61,7 @@ namespace lmsextreg.Models
 
         [Display(Name = "Status")]
         public EnrollmentStatus EnrollmentStatus { get; set; }
+        public ICollection<EnrollmentHistory> EnrollmentHistory { get; set; }
 
         ////////////////////////////////////////////////////////////
         // UserCreated:

@@ -43,7 +43,7 @@ namespace lmsextreg.Migrations
                 columns: table => new
                 {
                     StatusCode = table.Column<string>(nullable: false),
-                    StatusName = table.Column<string>(nullable: false)
+                    StatusLabel = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,6 +104,34 @@ namespace lmsextreg.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StatusTransition",
+                columns: table => new
+                {
+                    StatusTransitionID = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    FromStatusCode = table.Column<string>(nullable: false),
+                    ToStatusCode = table.Column<string>(nullable: false),
+                    TransitionCode = table.Column<string>(nullable: false),
+                    TransitionLabel = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatusTransition", x => x.StatusTransitionID);
+                    table.ForeignKey(
+                        name: "FK_StatusTransition_EnrollmentStatus_FromStatusCode",
+                        column: x => x.FromStatusCode,
+                        principalTable: "EnrollmentStatus",
+                        principalColumn: "StatusCode",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StatusTransition_EnrollmentStatus_ToStatusCode",
+                        column: x => x.ToStatusCode,
+                        principalTable: "EnrollmentStatus",
+                        principalColumn: "StatusCode",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -242,18 +270,17 @@ namespace lmsextreg.Migrations
                 columns: table => new
                 {
                     LMSProgramID = table.Column<int>(nullable: false),
-                    ApproverUserId = table.Column<string>(nullable: false),
-                    ApproverId = table.Column<string>(nullable: true)
+                    ApproverUserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProgramApprover", x => new { x.LMSProgramID, x.ApproverUserId });
                     table.ForeignKey(
-                        name: "FK_ProgramApprover_AspNetUsers_ApproverId",
-                        column: x => x.ApproverId,
+                        name: "FK_ProgramApprover_AspNetUsers_ApproverUserId",
+                        column: x => x.ApproverUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProgramApprover_LMSProgram_LMSProgramID",
                         column: x => x.LMSProgramID,
@@ -268,7 +295,6 @@ namespace lmsextreg.Migrations
                 {
                     ProgramEnrollmentID = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    ApproverId = table.Column<string>(nullable: true),
                     ApproverUserId = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateLastUpdated = table.Column<DateTime>(nullable: false),
@@ -282,8 +308,8 @@ namespace lmsextreg.Migrations
                 {
                     table.PrimaryKey("PK_ProgramEnrollment", x => x.ProgramEnrollmentID);
                     table.ForeignKey(
-                        name: "FK_ProgramEnrollment_AspNetUsers_ApproverId",
-                        column: x => x.ApproverId,
+                        name: "FK_ProgramEnrollment_AspNetUsers_ApproverUserId",
+                        column: x => x.ApproverUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -304,6 +330,41 @@ namespace lmsextreg.Migrations
                         column: x => x.StudentUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EnrollmentHistory",
+                columns: table => new
+                {
+                    EnrollmentHistoryID = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    ActorRemarks = table.Column<string>(nullable: true),
+                    ActorUserId = table.Column<string>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    ProgramEnrollmentID = table.Column<int>(nullable: false),
+                    StatusTransitionID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnrollmentHistory", x => x.EnrollmentHistoryID);
+                    table.ForeignKey(
+                        name: "FK_EnrollmentHistory_AspNetUsers_ActorUserId",
+                        column: x => x.ActorUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnrollmentHistory_ProgramEnrollment_ProgramEnrollmentID",
+                        column: x => x.ProgramEnrollmentID,
+                        principalTable: "ProgramEnrollment",
+                        principalColumn: "ProgramEnrollmentID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnrollmentHistory_StatusTransition_StatusTransitionID",
+                        column: x => x.StatusTransitionID,
+                        principalTable: "StatusTransition",
+                        principalColumn: "StatusTransitionID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -355,20 +416,35 @@ namespace lmsextreg.Migrations
                 column: "SubAgencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnrollmentStatus_StatusName",
+                name: "IX_EnrollmentHistory_ActorUserId",
+                table: "EnrollmentHistory",
+                column: "ActorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EnrollmentHistory_ProgramEnrollmentID",
+                table: "EnrollmentHistory",
+                column: "ProgramEnrollmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EnrollmentHistory_StatusTransitionID",
+                table: "EnrollmentHistory",
+                column: "StatusTransitionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EnrollmentStatus_StatusLabel",
                 table: "EnrollmentStatus",
-                column: "StatusName",
+                column: "StatusLabel",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgramApprover_ApproverId",
+                name: "IX_ProgramApprover_ApproverUserId",
                 table: "ProgramApprover",
-                column: "ApproverId");
+                column: "ApproverUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgramEnrollment_ApproverId",
+                name: "IX_ProgramEnrollment_ApproverUserId",
                 table: "ProgramEnrollment",
-                column: "ApproverId");
+                column: "ApproverUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProgramEnrollment_StatusCode",
@@ -384,6 +460,17 @@ namespace lmsextreg.Migrations
                 name: "IX_ProgramEnrollment_LMSProgramID_StudentUserId",
                 table: "ProgramEnrollment",
                 columns: new[] { "LMSProgramID", "StudentUserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StatusTransition_ToStatusCode",
+                table: "StatusTransition",
+                column: "ToStatusCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StatusTransition_FromStatusCode_ToStatusCode",
+                table: "StatusTransition",
+                columns: new[] { "FromStatusCode", "ToStatusCode" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -410,13 +497,19 @@ namespace lmsextreg.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "EnrollmentHistory");
+
+            migrationBuilder.DropTable(
                 name: "ProgramApprover");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "ProgramEnrollment");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "StatusTransition");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

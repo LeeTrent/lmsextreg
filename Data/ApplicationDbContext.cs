@@ -21,7 +21,8 @@ namespace lmsextreg.Data
         public DbSet<ProgramApprover> ProgramApprovers { get; set; }
         public DbSet<EnrollmentStatus> EnrollmentStatuses { get; set; }
         public DbSet<ProgramEnrollment> ProgramEnrollments { get; set; }
-
+        public DbSet<StatusTransition> StatusTransitions { get; set; }
+        public DbSet<EnrollmentHistory> EnrollmentHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -38,7 +39,9 @@ namespace lmsextreg.Data
             builder.Entity<ProgramApprover>().ToTable("ProgramApprover");
             builder.Entity<EnrollmentStatus>().ToTable("EnrollmentStatus");
             builder.Entity<ProgramEnrollment>().ToTable("ProgramEnrollment");
-            
+            builder.Entity<StatusTransition>().ToTable("StatusTransition");
+            builder.Entity<EnrollmentHistory>().ToTable("EnrollmentHistory");
+
             /************************************************************************
              There are some configurations that can only be done with the fluent API
              (specifying a composite PK).
@@ -49,23 +52,34 @@ namespace lmsextreg.Data
             // - Composite Primary Key
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramApprover>()
-                .HasKey( pa => new { pa.LMSProgramID, pa.ApproverUserId } );  
-            
-            /////////////////////////////////////////////////////////////////////////
-            // ProgramEnrollment:
-            //  - Composite Primary Key
-            /////////////////////////////////////////////////////////////////////////
-            // builder.Entity<ProgramEnrollment>()
-            //     .HasKey( e => new { e.LMSProgramID, e.LearnerUserId } ); 
-            /////////////////////////////////////////////////////////////////////////                           
+                .HasKey( pa => new { pa.LMSProgramID, pa.ApproverUserId } );      
 
+           /////////////////////////////////////////////////////////////////////////
+            // ProgramApprover:
+            //  - Foreign Key (LMSProgram.LMSProgramID)
+            /////////////////////////////////////////////////////////////////////////
+            // builder.Entity<ProgramApprover>()
+            //     .HasOne( pa => pa.LMSProgram)
+            //     .WithMany()
+            //     .HasForeignKey(pa => pa.LMSProgramID);         
+
+           /////////////////////////////////////////////////////////////////////////
+            // ProgramApprover:
+            //  - Foreign Key (ApplicationUser.Id)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<ProgramApprover>()
+                .HasOne( pa => pa.Approver)
+                .WithMany()
+                .HasForeignKey(pa => pa.ApproverUserId);                                                     
+            
             /////////////////////////////////////////////////////////////////////////                           
             // ProgramEnrollment:
             // - Unique Key Constraint Combination (LMSProgramID, LearnerUserId)
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
                 .HasIndex( p => new {p.LMSProgramID, p.StudentUserId} )
-                .IsUnique();             
+                .IsUnique();
+
             /////////////////////////////////////////////////////////////////////////
             // ProgramEnrollment:
             //  - Foreign Key (EnrollmentStatus.StatusCode)
@@ -77,27 +91,82 @@ namespace lmsextreg.Data
 
            /////////////////////////////////////////////////////////////////////////
             // ProgramEnrollment:
-            //  - Foreign Key (ApplicationUser.Learner)
+            //  - Foreign Key (ApplicationUser.Id -  Student)
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<ProgramEnrollment>()
                 .HasOne( pe => pe.Student)
                 .WithMany()
                 .HasForeignKey(pe => pe.StudentUserId);
 
+           /////////////////////////////////////////////////////////////////////////
+            // ProgramEnrollment:
+            //  - Foreign Key (ApplicationUser.Id - Approver)
             /////////////////////////////////////////////////////////////////////////
-            // StatusTransition:
-            //  - Composite Primary Key
-            /////////////////////////////////////////////////////////////////////////
-            //builder.Entity<StatusTransition>()
-            //    .HasKey( st => new { st.FromStatusCode, st.ToStatusCode } );      
+            builder.Entity<ProgramEnrollment>()
+                .HasOne( pe => pe.Approver)
+                .WithMany()
+                .HasForeignKey(pe => pe.ApproverUserId);
                 
             /////////////////////////////////////////////////////////////////////////                           
             // EnrollmentStatus:
             // - Unique Key Constraint
             /////////////////////////////////////////////////////////////////////////
             builder.Entity<EnrollmentStatus>()
-                .HasIndex(es => es.StatusName)
+                .HasIndex(es => es.StatusLabel)
                 .IsUnique();                         
+            
+            /////////////////////////////////////////////////////////////////////////                           
+            // StatusTransition:
+            // - Unique Key Constraint Combination (FromStatusCode, ToStatusCode)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<StatusTransition>()
+                .HasIndex( st => new {st.FromStatusCode, st.ToStatusCode} )
+                .IsUnique();
+
+            /////////////////////////////////////////////////////////////////////////
+            // StatusTransition:
+            //  - Foreign Key (EnrollmentStatus.StatusCode)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<StatusTransition>()
+                .HasOne( st => st.FromStatus)
+                .WithMany()
+                .HasForeignKey(st => st.FromStatusCode);
+
+           /////////////////////////////////////////////////////////////////////////
+            // StatusTransition:
+            //  - Foreign Key (EnrollmentStatus.StatusCode)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<StatusTransition>()
+                .HasOne( st => st.ToStatus)
+                .WithMany()
+                .HasForeignKey(st => st.ToStatusCode);     
+
+            /////////////////////////////////////////////////////////////////////////
+            // EnrollmentHistory:
+            //  - Foreign Key (ProgramEnrollment.ProgramEnrollmentID)
+            /////////////////////////////////////////////////////////////////////////
+            // builder.Entity<EnrollmentHistory>()
+            //     .HasOne( eh => eh.ProgramEnrollment)
+            //     .WithMany()
+            //     .HasForeignKey(eh => eh.ProgramEnrollmentID);      
+
+            /////////////////////////////////////////////////////////////////////////
+            // EnrollmentHistory:
+            //  - Foreign Key (StatusTransition.StatusTransitionID)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<EnrollmentHistory>()
+                .HasOne( eh => eh.StatusTransition)
+                .WithMany()
+                .HasForeignKey(eh => eh.StatusTransitionID);   
+
+            /////////////////////////////////////////////////////////////////////////
+            // EnrollmentHistory:
+            //  - Foreign Key (StatusTransition.StatusTransitionID)
+            /////////////////////////////////////////////////////////////////////////
+            builder.Entity<EnrollmentHistory>()
+                .HasOne( eh => eh.Actor)
+                .WithMany()
+                .HasForeignKey(eh => eh.ActorUserId);
         }
     }
 }

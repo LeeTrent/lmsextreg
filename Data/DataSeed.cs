@@ -18,6 +18,7 @@ namespace lmsextreg.Data
 
             await EnsureRoles(svcProvider);
             await EnsureEnrollmentStatuses(dbContext);
+            await EnsureStatusTransitions(dbContext);
             await EnsurePrograms(dbContext);
             await EnsureApprovers(svcProvider, tempPW); 
             await EnsureStudents(svcProvider, tempPW); 
@@ -58,13 +59,15 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureEnrollmentStatuses: BEGIN");
 
-            await EnsureEnrollmentStatus(dbContext, "PENDING", "Pending");
-            await EnsureEnrollmentStatus(dbContext, "APPROVED", "Approved");
-            await EnsureEnrollmentStatus(dbContext, "DENIED", "Denied");
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.NONE,       StatusLabelConstants.NONE);
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.PENDING,    StatusLabelConstants.PENDING);
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.WITHDRAWN,  StatusLabelConstants.WITHDRAWN);
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.APPROVED,   StatusLabelConstants.APPROVED);
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.DENIED,     StatusLabelConstants.DENIED);
 
             Console.WriteLine("DataSeed.EnsureEnrollmentStatuses: END");
         }        
-        private static async Task EnsureEnrollmentStatus(ApplicationDbContext dbContext, string statusCode, string statusName)
+        private static async Task EnsureEnrollmentStatus(ApplicationDbContext dbContext, string statusCode, string statusLabel)
         {
             Console.WriteLine("DataSeed.EnsureEnrollmentStatus: BEGIN");
 
@@ -74,7 +77,7 @@ namespace lmsextreg.Data
                 enrollmentStatus = new EnrollmentStatus
                 {
                     StatusCode = statusCode,
-                    StatusName = statusName
+                    StatusLabel = statusLabel
                 };
 
                 dbContext.EnrollmentStatuses.Add(enrollmentStatus);
@@ -82,8 +85,58 @@ namespace lmsextreg.Data
             }
 
             Console.WriteLine("DataSeed.EnsureEnrollmentStatus: END");
-        }        
+        }    
 
+        private static async Task EnsureStatusTransitions(ApplicationDbContext dbContext)
+        {
+            Console.WriteLine("DataSeed.EnsureStatusTransitions: BEGIN");
+
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.NONE, StatusCodeConstants.PENDING, TransitionCodeConstants.NONE_TO_PENDING, TransitionLabelConstants.NONE_TO_PENDING
+            );
+            
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.PENDING,  StatusCodeConstants.WITHDRAWN, TransitionCodeConstants.PENDING_TO_WITHDRAWN,  TransitionLabelConstants.PENDING_TO_WITHDRAWN
+            );
+            
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.PENDING,  StatusCodeConstants.APPROVED, TransitionCodeConstants.PENDING_TO_APPROVED,  TransitionLabelConstants.PENDING_TO_APPROVED
+            );
+            
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.PENDING,  StatusCodeConstants.DENIED,  TransitionCodeConstants.PENDING_TO_DENIED,  TransitionLabelConstants.PENDING_TO_DENIED
+            );
+
+            Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
+        }
+        private static async Task EnsureStatusTransition(ApplicationDbContext dbContext, string fromStatusCode, string toStatusCode,
+                                                            string transitionCode, string transitionLabel)
+        {
+            Console.WriteLine("DataSeed.EnsureStatusTransition: BEGIN");
+            
+            var statusTransition = await dbContext.StatusTransitions.FirstOrDefaultAsync(st => st.FromStatusCode == fromStatusCode && st.ToStatusCode == toStatusCode);
+            if ( statusTransition == null)
+            {
+                statusTransition = new StatusTransition
+                {
+                    FromStatusCode = fromStatusCode,
+                    ToStatusCode = toStatusCode,
+                    TransitionCode = transitionCode,
+                    TransitionLabel = transitionLabel
+                };
+
+                dbContext.StatusTransitions.Add(statusTransition);
+                await dbContext.SaveChangesAsync();
+            }
+
+            Console.WriteLine("DataSeed.EnsureStatusTransition: END");
+
+        }
+        
         private static async Task EnsurePrograms(ApplicationDbContext dbContext)
         {
             Console.WriteLine("DataSeed.EnsurePrograms: BEGIN");

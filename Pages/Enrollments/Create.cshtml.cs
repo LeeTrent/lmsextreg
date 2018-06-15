@@ -88,7 +88,7 @@ namespace lmsextreg.Pages.Enrollments
                 StudentUserId        = _userManager.GetUserId(User),
                 UserCreated          = _userManager.GetUserId(User),
                 DateCreated          = DateTime.Now,
-                StatusCode           = StatusConstants.PENDING
+                StatusCode           = StatusCodeConstants.PENDING
             };
 
         //    var authorizationCheck = await _authorizationService.AuthorizeAsync(User, pe, CRUDConstants.CREATE);
