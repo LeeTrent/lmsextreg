@@ -113,13 +113,50 @@ namespace lmsextreg.Pages.Approvals
                 return NotFound();
             } 
 
+            ////////////////////////////////////////////////////////////
+            // Step #2:
+            // Now that record exists, make sure that the logged-in user
+            // is authorized to edit (approver/deny) enrollment
+            // applications for this particular LMS Program.
+            ////////////////////////////////////////////////////////////
+            var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
+                    + "  WHERE  \"ProgramEnrollmentID\" = {0} "
+                    + "    AND  \"LMSProgramID\" " 
+                    + "     IN "
+                    + "      ( "
+                    + "        SELECT \"LMSProgramID\" "
+                    + "          FROM public.\"ProgramApprover\" "
+                    + "         WHERE \"ApproverUserId\" = {1} "
+                    + "      ) ";
+
+            ProgramEnrollment = null;
+            ProgramEnrollment = await _dbContext.ProgramEnrollments
+                                .FromSql(sql, id, _userManager.GetUserId(User))
+                                .SingleOrDefaultAsync();
+
+            /////////////////////////////////////////////////////////////
+            // We already know that record exists from Step #1 so if we
+            // get a "Not Found" in Step #2, we know it's because the 
+            // logged-in user is not authorized to edit (approve/deny)
+            // enrollment applications for this LMS Program.
+            /////////////////////////////////////////////////////////////
+            if (ProgramEnrollment == null)
+            {
+                return Unauthorized();
+            }            
+
+            /////////////////////////////////////////////////////////////////
+            // Update ProgramEnrollment Record
+            /////////////////////////////////////////////////////////////////
             ProgramEnrollment.StatusCode = status;
             ProgramEnrollment.ApproverUserId = _userManager.GetUserId(User);
             _dbContext.ProgramEnrollments.Update(ProgramEnrollment);
             await _dbContext.SaveChangesAsync();
-            
+
+            /////////////////////////////////////////////////////////////////
+            // Redirect to Approval Index Page
+            /////////////////////////////////////////////////////////////////
             return RedirectToPage("./Index");          
         }
-
     }
 }
