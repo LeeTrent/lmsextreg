@@ -83,7 +83,7 @@ namespace lmsextreg.Pages.Enrollments
             Console.WriteLine("ModelState IS valid");
           
             ////////////////////////////////////////////////////////////
-            // Retrieve "NONE TO PENDING" StatusTranstion
+            // Retrieve "NONE TO PENDING" StatusTransition
             ////////////////////////////////////////////////////////////            
             var statusTransition = await _context.StatusTransitions
                                     .Where(st => st.TransitionCode == TransitionCodeConstants.NONE_TO_PENDING)
