@@ -55,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    <a asp-page="./Edit"  asp-route-id="@item.ProgramEnrollmentID">Approve / Deny</a>
+                    <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Approve / Deny</a>
                 </td>
             </tr>
         }

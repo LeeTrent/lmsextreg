@@ -1,0 +1,55 @@
+@page "{id:int}"
+@model lmsextreg.Pages.Approvals.ReviewModel
+
+@{
+    ViewData["Title"] = "Approvals";
+}
+<h2>Approve/Deny</h2>
+<div>
+    <h4>Enrollment Application</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Applicant's Name:</dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.Student.FullName)
+        </dd>
+        <dt>Email Address:</dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.Student.UserName)
+        </dd>
+        <dt>Agency:</dt>   
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.Student.Agency.AgencyName)
+        </dd>    
+        <dt>Sub-Agency:</dt>   
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.Student.SubAgency.SubAgencyName)
+        </dd>     
+        <dt>Job Title:</dt>   
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.Student.JobTitle)
+        </dd>                          
+    </dl>   
+</div>
+<div class="form-group">
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.ProgramEnrollment.ProgramEnrollmentID" />
+        <div class="input-group mb3">
+            <div class="form-group">
+                <input type="submit" class="btn btn-xs btn-success" asp-page-handler="Approve" value="Approve" />&nbsp;
+                <input type="submit" class="btn btn-xs btn-danger"  asp-page-handler="Deny"    value="Deny" />&nbsp;
+            </div>
+             <div class="form-group">
+                <label    asp-for="Input.Remarks"></label>:
+                <textarea asp-for="Input.Remarks" class="form-control" rows="3" cols="40"></textarea>
+            </div>
+        </div>    
+    </form>
+</div>
+<div class="form-group">   
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
