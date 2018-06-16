@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -110,16 +111,16 @@ namespace lmsextreg.Pages.Approvals
             // Step #1:
             // Check to see if records exists
             ////////////////////////////////////////////////////////////
-            ProgramEnrollment = await _dbContext.ProgramEnrollments
-                              .Where(pe => pe.ProgramEnrollmentID == id) 
-                              .SingleOrDefaultAsync();     
+            var lvProgramEnrollment = await _dbContext.ProgramEnrollments
+                                        .Where(pe => pe.ProgramEnrollmentID == id) 
+                                        .SingleOrDefaultAsync();     
 
             ////////////////////////////////////////////////////////////
             // Return "Not Found" if record doesn't exist
             ////////////////////////////////////////////////////////////
-            if (ProgramEnrollment == null)
+            if (lvProgramEnrollment == null)
             {
-                Console.WriteLine("ProgramEnrollment NOT FOUND in Step# 1");
+                Console.WriteLine("ProgramEnrollment NOT FOUND in Step #1");
                 return NotFound();
             } 
 
@@ -139,10 +140,11 @@ namespace lmsextreg.Pages.Approvals
                     + "         WHERE \"ApproverUserId\" = {1} "
                     + "      ) ";
 
-            ProgramEnrollment = null;
-            ProgramEnrollment = await _dbContext.ProgramEnrollments
-                                .FromSql(sql, id, _userManager.GetUserId(User))
-                                .SingleOrDefaultAsync();
+            lvProgramEnrollment = null;
+            lvProgramEnrollment = await _dbContext.ProgramEnrollments
+                    .FromSql(sql, id, _userManager.GetUserId(User))
+                    .Include(pe => pe.EnrollmentHistory)
+                    .SingleOrDefaultAsync();
 
             /////////////////////////////////////////////////////////////
             // We already know that record exists from Step #1 so if we
@@ -150,17 +152,53 @@ namespace lmsextreg.Pages.Approvals
             // logged-in user is not authorized to edit (approve/deny)
             // enrollment applications for this LMS Program.
             /////////////////////////////////////////////////////////////
-            if (ProgramEnrollment == null)
+            if (lvProgramEnrollment == null)
             {
                 return Unauthorized();
             }            
 
+            ////////////////////////////////////////////////////////////
+            // Retrieve "PENDING TO APPROVED" StatusTransition
+            ////////////////////////////////////////////////////////////            
+            var lvStatusTranstion = await _dbContext.StatusTransitions
+                                    .Where(st => st.TransitionCode == TransitionCodeConstants.PENDING_TO_APPROVED)
+                                    .SingleOrDefaultAsync();
+            
+            ////////////////////////////////////////////////////////////
+            // Create EnrollmentHistory using "PENDING TO APPROVED"
+            // StatusTransition
+            ////////////////////////////////////////////////////////////            
+            var lvEnrollmentHistory = new EnrollmentHistory()
+            {
+                    StatusTransitionID = lvStatusTranstion.StatusTransitionID,
+                    ActorUserId = _userManager.GetUserId(User),
+                    DateCreated = DateTime.Now
+            };
+
+            ////////////////////////////////////////////////////////////
+            // Instantiate EnrollmentHistory, if necessary
+            ////////////////////////////////////////////////////////////
+            if ( lvProgramEnrollment.EnrollmentHistory == null) 
+            {
+                lvProgramEnrollment.EnrollmentHistory = new List<EnrollmentHistory>();
+            }
+
+            ///////////////////////////////////////////////////////////////////
+            // Add newly created EnrollmentHistory with "PENDING_TO_APPROVED"
+            // StatusTransition to ProgramEnrollment's EnrollmentHistory
+            // Collection
+            ///////////////////////////////////////////////////////////////////            
+            lvProgramEnrollment.EnrollmentHistory.Add(lvEnrollmentHistory);
+
             /////////////////////////////////////////////////////////////////
-            // Update ProgramEnrollment Record
+            // Update ProgramEnrollment Record with
+            //  1. EnrollmentStatus of "APPROVED"
+            //  2. ApproverUserId (logged-in user)
+            //  3. EnrollmentHistory (PENDING TO APPROVED)
             /////////////////////////////////////////////////////////////////
-            ProgramEnrollment.StatusCode = StatusCodeConstants.APPROVED;
-            ProgramEnrollment.ApproverUserId = _userManager.GetUserId(User);
-            _dbContext.ProgramEnrollments.Update(ProgramEnrollment);
+            lvProgramEnrollment.StatusCode = StatusCodeConstants.APPROVED;
+            lvProgramEnrollment.ApproverUserId = _userManager.GetUserId(User);
+            _dbContext.ProgramEnrollments.Update(lvProgramEnrollment);
             await _dbContext.SaveChangesAsync();
 
             /////////////////////////////////////////////////////////////////
