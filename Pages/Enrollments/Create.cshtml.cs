@@ -82,25 +82,40 @@ namespace lmsextreg.Pages.Enrollments
             
             Console.WriteLine("ModelState IS valid");
           
+            ////////////////////////////////////////////////////////////
+            // Retrieve "NONE TO PENDING" StatusTranstion
+            ////////////////////////////////////////////////////////////            
+            var statusTransition = await _context.StatusTransitions
+                                    .Where(st => st.TransitionCode == TransitionCodeConstants.NONE_TO_PENDING)
+                                    .SingleOrDefaultAsync();
+
+            ////////////////////////////////////////////////////////////
+            // Create ProgramEnrollment (root class), adding newly
+            // created EnrollmentHistory to the EnrollmentHistory
+            // collection
+            ////////////////////////////////////////////////////////////            
             var pe = new ProgramEnrollment
             {
                 LMSProgramID         = Int32.Parse(Input.LMSProgramID),
                 StudentUserId        = _userManager.GetUserId(User),
                 UserCreated          = _userManager.GetUserId(User),
                 DateCreated          = DateTime.Now,
-                StatusCode           = StatusCodeConstants.PENDING
+                StatusCode           = StatusCodeConstants.PENDING,
+                EnrollmentHistory    = new List<EnrollmentHistory>
+                {
+                    new EnrollmentHistory
+                    {
+                        StatusTransitionID = statusTransition.StatusTransitionID,
+                        ActorUserId = _userManager.GetUserId(User),
+                        DateCreated = DateTime.Now
+
+                    }
+                }
             };
 
-        //    var authorizationCheck = await _authorizationService.AuthorizeAsync(User, pe, CRUDConstants.CREATE);
-        //    Console.WriteLine("authorizationCheck.Succeeded: " + authorizationCheck.Succeeded);
-
-        //    if ( authorizationCheck.Succeeded )
-        //    {
-        //        Console.WriteLine("authorizationCheck FAILED - return new ChallengeResult()");
-        //        return new ChallengeResult();
-        //    }
-
-            Console.WriteLine("authorizationCheck PASSED - persisiting program enrollment to database");
+            /////////////////////////////////////////////////////////////////////
+            // Persist ProgramEnrollment plus EnrollmentHistory to the database
+            /////////////////////////////////////////////////////////////////////
             _context.ProgramEnrollments.Add(pe);
             await _context.SaveChangesAsync();
 
