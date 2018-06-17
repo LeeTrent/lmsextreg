@@ -55,7 +55,28 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Review</a>
+                    @if ( item.StatusCode == @Model.PENDING)
+                    {
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Review</a>
+                        @(" | ")
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Approve/Deny</a>
+                    }
+                    @if ( item.StatusCode == @Model.APPROVED )
+                    {
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Review</a>
+                        @(" | ")
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Revoke</a>
+                    }                                         
+                    @if ( item.StatusCode == @Model.DENIED)
+                    {
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Review</a>
+                        @(" | ")
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Approve</a>
+                    }
+                    @if ( item.StatusCode == @Model.WITHDRAWN || item.StatusCode == @Model.REVOKED )
+                    {
+                        <a asp-page="./Review"  asp-route-id="@item.ProgramEnrollmentID">Review</a>
+                    }  
                 </td>
             </tr>
         }

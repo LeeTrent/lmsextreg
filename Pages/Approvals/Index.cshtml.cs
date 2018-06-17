@@ -26,6 +26,12 @@ namespace lmsextreg.Pages.Approvals
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
         public ApplicationUser LoggedInUser {get;set;}
 
+        public string PENDING   = StatusCodeConstants.PENDING;
+        public string WITHDRAWN = StatusCodeConstants.WITHDRAWN;
+        public string APPROVED  = StatusCodeConstants.APPROVED;
+        public string DENIED    = StatusCodeConstants.DENIED;
+        public string REVOKED   = StatusCodeConstants.REVOKED;
+
         public async Task OnGetAsync()
         {
             Console.WriteLine("User is APPROVER: " + User.IsInRole(RoleConstants.APPROVER));
