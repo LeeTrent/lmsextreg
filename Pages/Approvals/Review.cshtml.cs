@@ -131,7 +131,7 @@ namespace lmsextreg.Pages.Approvals
 
         public async Task<IActionResult> OnPostAsync(int programEnrollmentID, string statusCode, string statusTransitionCode)
         {
-            Console.WriteLine("Approvals.Review.OnPostApproveAsync(): BEGIN");
+            Console.WriteLine("Approvals.Review.OnPostAsync(): BEGIN");
             Console.WriteLine("id: " + programEnrollmentID);
             Console.WriteLine("Remarks: " + Input.Remarks);
 

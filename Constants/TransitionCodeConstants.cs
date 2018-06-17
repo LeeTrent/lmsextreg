@@ -6,5 +6,6 @@ namespace lmsextreg.Constants
         public static readonly string PENDING_TO_WITHDRAWN  = "PENDING_TO_WITHDRAWN";
         public static readonly string PENDING_TO_APPROVED   = "PENDING_TO_APPROVED";
         public static readonly string PENDING_TO_DENIED     = "PENDING_TO_DENIED";   
+        public static readonly string APPROVED_TO_REVOKED   = "APPROVED_TO_REVOKED";
     }
 }

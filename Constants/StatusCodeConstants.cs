@@ -8,6 +8,7 @@ namespace lmsextreg.Constants
         public static readonly string WITHDRAWN = "WITHDRAWN";
         public static readonly string APPROVED  = "APPROVED";
         public static readonly string DENIED    = "DENIED";
+        public static readonly string REVOKED   = "REVOKED";
         
     }
 }

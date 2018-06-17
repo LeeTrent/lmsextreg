@@ -64,6 +64,7 @@ namespace lmsextreg.Data
             await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.WITHDRAWN,  StatusLabelConstants.WITHDRAWN);
             await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.APPROVED,   StatusLabelConstants.APPROVED);
             await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.DENIED,     StatusLabelConstants.DENIED);
+            await EnsureEnrollmentStatus(dbContext, StatusCodeConstants.REVOKED,    StatusLabelConstants.REVOKED);
 
             Console.WriteLine("DataSeed.EnsureEnrollmentStatuses: END");
         }        
@@ -111,6 +112,11 @@ namespace lmsextreg.Data
                 dbContext, StatusCodeConstants.PENDING,  StatusCodeConstants.DENIED,  TransitionCodeConstants.PENDING_TO_DENIED,  TransitionLabelConstants.PENDING_TO_DENIED
             );
 
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.APPROVED,  StatusCodeConstants.REVOKED,  TransitionCodeConstants.APPROVED_TO_REVOKED,  TransitionLabelConstants.APPROVED_TO_REVOKED
+            );
+
             Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
         }
         private static async Task EnsureStatusTransition(ApplicationDbContext dbContext, string fromStatusCode, string toStatusCode,
@@ -134,7 +140,6 @@ namespace lmsextreg.Data
             }
 
             Console.WriteLine("DataSeed.EnsureStatusTransition: END");
-
         }
         
         private static async Task EnsurePrograms(ApplicationDbContext dbContext)
