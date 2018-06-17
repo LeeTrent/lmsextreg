@@ -37,6 +37,10 @@ namespace lmsextreg.Pages.Approvals
         [BindProperty]
         public InputModel Input { get; set; }
         public ProgramEnrollment ProgramEnrollment { get; set; }
+        public bool ShowReviewForm { get; set; }
+        public bool ShowApproveButton {get; set; }
+        public bool ShowDenyButton {get; set; }
+        public bool ShowRevokeButton {get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -97,6 +101,38 @@ namespace lmsextreg.Pages.Approvals
             {
                 return Unauthorized();
             }
+
+            if ( ProgramEnrollment.StatusCode == StatusCodeConstants.PENDING )
+            {
+                ShowReviewForm      = true;
+                ShowApproveButton   = true;
+                ShowDenyButton      = true;
+                ShowRevokeButton    = false;
+            }
+            if ( ProgramEnrollment.StatusCode == StatusCodeConstants.APPROVED )
+            {
+                ShowReviewForm      = true;
+                ShowApproveButton   = false;
+                ShowDenyButton      = false;
+                ShowRevokeButton    = true;
+            }   
+            if ( ProgramEnrollment.StatusCode == StatusCodeConstants.DENIED )
+            {
+                ShowReviewForm      = true;
+                ShowApproveButton   = true;
+                ShowDenyButton      = false;
+                ShowRevokeButton    = false;
+            }   
+            if ( ProgramEnrollment.StatusCode == StatusCodeConstants.REVOKED )
+            {
+                ShowReviewForm      = false;
+                ShowApproveButton   = false;
+                ShowDenyButton      = false;
+                ShowRevokeButton    = false;
+            }                                    
+
+
+
             
             return Page();                              
         }
@@ -126,6 +162,19 @@ namespace lmsextreg.Pages.Approvals
                 id, 
                 StatusCodeConstants.DENIED, 
                 TransitionCodeConstants.PENDING_TO_DENIED
+            );
+        }
+        public async Task<IActionResult> OnPostRevokeAsync(int id)
+        {
+            Console.WriteLine("Approvals.Review.OnPostRevokeAsync():");
+            Console.WriteLine("programEnrollmentID: " + id);
+            Console.WriteLine("Remarks: " + Input.Remarks);
+
+            return await this.OnPostAsync
+            (
+                id, 
+                StatusCodeConstants.REVOKED, 
+                TransitionCodeConstants.APPROVED_TO_REVOKED
             );
         }
 

@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Approvals";
 }
-<h2>Approve/Deny</h2>
+<h2>Review</h2>
 <div>
     <h4>Enrollment Application</h4>
     <hr />
@@ -28,9 +28,15 @@
         <dt>Job Title:</dt>   
         <dd>
             @Html.DisplayFor(model => model.ProgramEnrollment.Student.JobTitle)
-        </dd>                          
+        </dd>  
+        <dt>Enrollment Status:</dt>   
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.EnrollmentStatus.StatusLabel)
+        </dd>                                 
     </dl>   
 </div>
+@if ( @Model.ShowReviewForm )
+{
     <form method="post">
         <input type="hidden" name="id" value="@Model.ProgramEnrollment.ProgramEnrollmentID" />
        <div class="input-group mb3">
@@ -39,11 +45,22 @@
                 <textarea asp-for="Input.Remarks" class="form-control" rows="3" cols="40"></textarea>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-xs btn-success" style="margin-top: 10px;" asp-page-handler="Approve" value="Approve" />&nbsp;
-                <input type="submit" class="btn btn-xs btn-danger"  style="margin-top: 10px;" asp-page-handler="Deny"    value="Deny" />&nbsp;
+                @if ( @Model.ShowApproveButton )
+                {
+                    <input type="submit" class="btn btn-xs btn-success" style="margin-top: 10px;" asp-page-handler="Approve" value="Approve" />
+                }
+                @if ( @Model.ShowDenyButton )
+                {
+                    <input type="submit" class="btn btn-xs btn-danger" style="margin-top: 10px;" asp-page-handler="Deny" value="Deny" />
+                }
+                @if ( @Model.ShowRevokeButton )
+                {
+                    <input type="submit" class="btn btn-xs btn-danger" style="margin-top: 10px;" asp-page-handler="Revoke" value="Revoke" />
+                }
             </div>
        </div>  
     </form>
+}
 <div class="form-group">   
     <a asp-page="./Index">Back to List</a>
 </div>
