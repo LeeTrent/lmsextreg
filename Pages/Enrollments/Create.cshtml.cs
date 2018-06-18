@@ -41,6 +41,9 @@ namespace lmsextreg.Pages.Enrollments
             [Required]
             [Display(Name = "Program")]  
             public string LMSProgramID { get; set; }
+
+            [Display(Name = "Remarks")]  
+            public string Remarks { get; set; }
         }
         
         [BindProperty]
@@ -107,6 +110,7 @@ namespace lmsextreg.Pages.Enrollments
                     {
                         StatusTransitionID = statusTransition.StatusTransitionID,
                         ActorUserId = _userManager.GetUserId(User),
+                        ActorRemarks = Input.Remarks,
                         DateCreated = DateTime.Now
 
                     }

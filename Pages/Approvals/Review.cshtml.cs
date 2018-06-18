@@ -96,6 +96,7 @@ namespace lmsextreg.Pages.Approvals
                                     .Where(eh => eh.ProgramEnrollmentID == ProgramEnrollment.ProgramEnrollmentID)
                                     .Include(eh => eh.Actor)
                                     .Include(eh => eh.StatusTransition)
+                                    .OrderBy(eh => eh.EnrollmentHistoryID)
                                     .ToListAsync();
                                     
             /////////////////////////////////////////////////////////////
