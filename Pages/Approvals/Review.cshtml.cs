@@ -37,6 +37,7 @@ namespace lmsextreg.Pages.Approvals
         [BindProperty]
         public InputModel Input { get; set; }
         public ProgramEnrollment ProgramEnrollment { get; set; }
+        public IList<EnrollmentHistory> EnrollmentHistory { get;set; }
         public bool ShowReviewForm { get; set; }
         public bool ShowApproveButton {get; set; }
         public bool ShowDenyButton {get; set; }
@@ -91,6 +92,12 @@ namespace lmsextreg.Pages.Approvals
                                 .Include(pe => pe.EnrollmentStatus)
                                 .SingleOrDefaultAsync();
 
+            EnrollmentHistory = await _dbContext.EnrollmentHistories
+                                    .Where(eh => eh.ProgramEnrollmentID == ProgramEnrollment.ProgramEnrollmentID)
+                                    .Include(eh => eh.Actor)
+                                    .Include(eh => eh.StatusTransition)
+                                    .ToListAsync();
+                                    
             /////////////////////////////////////////////////////////////
             // We already know that record exists from Step #1 so if we
             // get a "Not Found" in Step #2, we know it's because the 

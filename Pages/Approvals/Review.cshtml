@@ -32,7 +32,31 @@
         <dt>Enrollment Status:</dt>   
         <dd>
             @Html.DisplayFor(model => model.ProgramEnrollment.EnrollmentStatus.StatusLabel)
-        </dd>                                 
+        </dd>     
+        <dt>Enrollment History:</dt>   
+        <dd>
+            <table class="table" style="width=50%;">
+                <thead>
+                    <tr>
+                        <td>Who</td>
+                        <td>What</td>
+                        <td>When</td>
+                        <td>Remarks</td>
+                    </tr> 
+                </thead> 
+                <tbody>
+                    @foreach (var item in Model.EnrollmentHistory) 
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Actor.FullName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StatusTransition.TransitionLabel)</td>                            
+                            <td>@Html.DisplayFor(modelItem => item.DateCreated)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ActorRemarks)</td> 
+                        </tr>
+                    }                    
+                </tbody>
+            </table>      
+        </dd>                                       
     </dl>   
 </div>
 @if ( @Model.ShowReviewForm )

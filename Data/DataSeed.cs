@@ -117,6 +117,11 @@ namespace lmsextreg.Data
                 dbContext, StatusCodeConstants.APPROVED,  StatusCodeConstants.REVOKED,  TransitionCodeConstants.APPROVED_TO_REVOKED,  TransitionLabelConstants.APPROVED_TO_REVOKED
             );
 
+            // await EnsureStatusTransition
+            // (
+            //     dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
+            // );            
+
             Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
         }
         private static async Task EnsureStatusTransition(ApplicationDbContext dbContext, string fromStatusCode, string toStatusCode,
