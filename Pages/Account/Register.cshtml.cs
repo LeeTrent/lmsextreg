@@ -49,7 +49,13 @@ namespace lmsextreg.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
         public SelectList AgencySelectList { get; set; }
-        public SelectList SubAgencySelectList { get; set; }
+        public SelectList SubAgencySelectList { get; set; }     
+
+        // [BindProperty]
+		// [Display(Name = "I agree to these Terms and Conditions")]
+		// [Range(typeof(bool), "true", "true", ErrorMessage = "Terms and Conditions must be agreed to in order to register.")]
+		// public bool TermsAndConditions { get; set; }
+
         public string ReturnUrl { get; set; }
 
         public class InputModel
@@ -91,17 +97,15 @@ namespace lmsextreg.Pages.Account
 
             [Required]
             [Display(Name = "SubAgency")]  
-            public string SubAgencyID { get; set; }            
+            public string SubAgencyID { get; set; }    
+
+            [BindProperty]
+            [Display(Name = "I agree to these Rules of Behavior.")]
+            [Range(typeof(bool), "true", "true", ErrorMessage = "Rules of Behavior must be agreed to in order to register.")]
+            public bool RulesOfBehaviorAgreedTo { get; set; }            
         }
 
-        // public void OnGet(string returnUrl = null)
-        // {
-        //     AgencySelectList    = new SelectList(_dbContext.Agencies, "AgencyID", "AgencyName");
-        //     SubAgencySelectList = new SelectList(_dbContext.SubAgencies, "SubAgencyID", "SubAgencyName");
-        //     ReturnUrl           = returnUrl;
-        // }
-
-        public void OnGet(string returnUrl = null)
+         public void OnGet(string returnUrl = null)
         {
             AgencySelectList    = new SelectList(_dbContext.Agencies.OrderBy(a => a.DisplayOrder), "AgencyID", "AgencyName");
             SubAgencySelectList = new SelectList(_dbContext.SubAgencies.OrderBy(sa => sa.DisplayOrder), "SubAgencyID", "SubAgencyName");
@@ -110,10 +114,28 @@ namespace lmsextreg.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            // Console.WriteLine("TermsAndConditions:");   
+            // Console.WriteLine(TermsAndConditions); 
+  
+            Console.WriteLine("Input.RulesOfBehaviorAgreedTo:");   
+            Console.WriteLine(Input.RulesOfBehaviorAgreedTo);   
+
+            // if ( ! Input.RulesOfBehaviorAgreedTo)
+            // {
+            //     return Page();
+            // }
+
+			if(!ModelState.IsValid)
+			{
+                Console.WriteLine("Modelstate is INVALID - returning Page()");
+				return Page();
+			}             
+ 
             ReturnUrl = returnUrl;
+ 
             if (ModelState.IsValid)
             {
-                //var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+               Console.WriteLine("Modelstate is VALID - processing will continue");
 
                 var user = new ApplicationUser
                 { 
@@ -126,27 +148,16 @@ namespace lmsextreg.Pages.Account
                     AgencyID        = Input.AgencyID,
                     SubAgencyID     = Input.SubAgencyID,
                     DateRegistered  = DateTime.Now,
-                    DateExpired     = DateTime.Now.AddDays(365)
+                    DateExpired     = DateTime.Now.AddDays(365),
+                    RulesOfBehaviorAgreedTo = Input.RulesOfBehaviorAgreedTo
                 };
 
                 // Create User
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                // if (result.Succeeded)
-                // {
-                //     if ( !await _roleManager.RoleExistsAsync("Learner") )
-                //     {
-                //         // Create Role
-                //         result = await _roleManager.CreateAsync(new IdentityRole("Learner"));
-                //     }
-                //     if (result.Succeeded)
-                //     {
-                //         // Create User Role 
-                //         result = await _userManager.AddToRoleAsync(user, "Learner");
-                //     }
-                // }    
+
+                // Create User Role 
                 if (result.Succeeded)
                 {
-                    // Create User Role 
                     result = await _userManager.AddToRoleAsync(user, RoleConstants.STUDENT);
                 }
 
@@ -162,8 +173,15 @@ namespace lmsextreg.Pages.Account
                     //return LocalRedirect(Url.GetLocalUrl(returnUrl));
                     return RedirectToPage("./RegisterConfirmation");
                 }
+                
+                _logger.LogDebug("# of errors: " + result.Errors.Count());
+                Console.WriteLine("# of errors: " + result.Errors.Count());
+
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug(error.Description);
+                    Console.WriteLine(error.Description);
+
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }

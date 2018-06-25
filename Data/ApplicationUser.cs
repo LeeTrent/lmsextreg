@@ -31,6 +31,7 @@ namespace lmsextreg.Data
         public SubAgency SubAgency { get; set; }
         public DateTime DateRegistered { get; set; }
         public DateTime DateExpired { get; set; }
+        public bool RulesOfBehaviorAgreedTo { get; set; }
 
     }
 }
