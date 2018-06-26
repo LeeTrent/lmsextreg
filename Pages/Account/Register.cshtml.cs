@@ -100,7 +100,7 @@ namespace lmsextreg.Pages.Account
             public string SubAgencyID { get; set; }    
 
             [BindProperty]
-            [Display(Name = "I agree to these Rules of Behavior.")]
+            [Display(Name = "I agree to these Rules of Behavior")]
             [Range(typeof(bool), "true", "true", ErrorMessage = "Rules of Behavior must be agreed to in order to register.")]
             public bool RulesOfBehaviorAgreedTo { get; set; }            
         }
