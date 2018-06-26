@@ -66,7 +66,7 @@ namespace lmsextreg.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -174,8 +174,8 @@ namespace lmsextreg.Pages.Account
                     return RedirectToPage("./RegisterConfirmation");
                 }
                 
-                _logger.LogDebug("# of errors: " + result.Errors.Count());
-                Console.WriteLine("# of errors: " + result.Errors.Count());
+                _logger.LogDebug("[logger] # of errors: " + result.Errors.Count());
+                Console.WriteLine("[console] # of errors: " + result.Errors.Count());
 
                 foreach (var error in result.Errors)
                 {
@@ -185,6 +185,9 @@ namespace lmsextreg.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            AgencySelectList    = new SelectList(_dbContext.Agencies.OrderBy(a => a.DisplayOrder), "AgencyID", "AgencyName");
+            SubAgencySelectList = new SelectList(_dbContext.SubAgencies.OrderBy(sa => sa.DisplayOrder), "SubAgencyID", "SubAgencyName");
 
             // If we got this far, something failed, redisplay form
             return Page();

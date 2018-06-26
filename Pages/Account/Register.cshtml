@@ -15,6 +15,19 @@
                 <div class="required-icon"><div class="text">*</div></div>                
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <div style="margin-top:10px;padding:10px;border: 1px dotted #000;">
+                    <p style="font-weight:bold;">Password Strength:</p>
+                    <ul>
+                        <li>Password must be at least 8 characters long</li>
+                        <li>Password must have at least one non-alphanumeric character</li>
+                        <li>Passwords must have at least one digit (0 - 9)</li>
+                        <li>Passwords must have at least one uppercase character (A - Z)</li>
+                        <li>Passwords must have at least one lowercase character (a - z)</li>
+                        <li>Passwords must use at least 6 different characters.</li                                                                                           
+                    </ul>
+                </div> 
+            </div>
             <div class="required-field-block">
                 <input asp-for="Input.Password" class="form-control" placeholder="Password" />
                 <div class="required-icon"><div class="text">*</div></div>   
