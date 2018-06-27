@@ -1,15 +1,19 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Net.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using lmsextreg.Data;
 using lmsextreg.Services;
 using lmsextreg.Models;
@@ -26,6 +30,7 @@ namespace lmsextreg.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
 
         public RegisterModel
             (
@@ -34,8 +39,8 @@ namespace lmsextreg.Pages.Account
                 ILogger<LoginModel> logger,
                 IEmailSender emailSender,
                 ApplicationDbContext dbContext,
-                RoleManager<IdentityRole> roleManager
-
+                RoleManager<IdentityRole> roleManager,
+                IConfiguration config
             )
         {
             _userManager = userManager;
@@ -44,6 +49,7 @@ namespace lmsextreg.Pages.Account
             _emailSender = emailSender;
             _dbContext = dbContext;
             _roleManager = roleManager;
+            _configuration = config;
         }
 
         [BindProperty]
@@ -109,30 +115,65 @@ namespace lmsextreg.Pages.Account
         {
             AgencySelectList    = new SelectList(_dbContext.Agencies.OrderBy(a => a.DisplayOrder), "AgencyID", "AgencyName");
             SubAgencySelectList = new SelectList(_dbContext.SubAgencies.OrderBy(sa => sa.DisplayOrder), "SubAgencyID", "SubAgencyName");
-            ReturnUrl           = returnUrl;
+            
+            var recaptchaKey = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
+            Console.WriteLine("recaptchaKey: " + recaptchaKey);
+            
+            var recaptchaSecret = _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET];
+            Console.WriteLine("recaptchaSecret: " + recaptchaSecret);              
+
+            ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];            
+            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
+
+            // Console.WriteLine("ReCaptchaKey:");
+            // Console.WriteLine(_configuration.GetSection("GoogleReCaptcha:key").Value);
+            // Console.WriteLine("ReCaptchaKey:");
+            // Console.WriteLine(ViewData["ReCaptchaKey"]);
+
+            ReturnUrl = returnUrl;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            // Console.WriteLine("TermsAndConditions:");   
-            // Console.WriteLine(TermsAndConditions); 
-  
             Console.WriteLine("Input.RulesOfBehaviorAgreedTo:");   
             Console.WriteLine(Input.RulesOfBehaviorAgreedTo);   
 
-            // if ( ! Input.RulesOfBehaviorAgreedTo)
-            // {
-            //     return Page();
-            // }
-
-			if(!ModelState.IsValid)
+			if( ! ModelState.IsValid )
 			{
                 Console.WriteLine("Modelstate is INVALID - returning Page()");
 				return Page();
 			}             
  
             ReturnUrl = returnUrl;
- 
+            
+            var recaptchaSecret = _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET];
+            Console.WriteLine("recaptchaSecret: " + recaptchaSecret);            
+
+            if  ( ! ReCaptchaPassed
+                    (
+                        Request.Form["g-recaptcha-response"], // that's how you get it from the Request object
+                        _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET],
+                        _logger
+                    )
+                )
+            {
+                Console.WriteLine("reCAPTCHA FAILED");
+                ModelState.AddModelError(string.Empty, "You failed the CAPTCHA. Are you a robot?");
+
+                AgencySelectList    = new SelectList(_dbContext.Agencies.OrderBy(a => a.DisplayOrder), "AgencyID", "AgencyName");
+                SubAgencySelectList = new SelectList(_dbContext.SubAgencies.OrderBy(sa => sa.DisplayOrder), "SubAgencyID", "SubAgencyName");
+
+                var recaptchaKey = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
+                Console.WriteLine("recaptchaKey: " + recaptchaKey);
+
+                ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
+                //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
+
+                return Page();
+            }
+
+            Console.WriteLine("reCAPTCHA PASSED");
+
             if (ModelState.IsValid)
             {
                Console.WriteLine("Modelstate is VALID - processing will continue");
@@ -197,6 +238,28 @@ namespace lmsextreg.Pages.Account
         {
             List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agyID ).ToList();
             return new JsonResult(new SelectList(subAgencyList, "SubAgencyID", "SubAgencyName"));
-        }         
+        } 
+
+        public static bool ReCaptchaPassed(string gRecaptchaResponse, string secret, ILogger logger)
+        {
+            HttpClient httpClient = new HttpClient();
+            var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={gRecaptchaResponse}").Result;
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                logger.LogError("Error while sending request to ReCaptcha");
+                return false;
+            }
+            
+            string JSONres = res.Content.ReadAsStringAsync().Result;
+            dynamic JSONdata = JObject.Parse(JSONres);
+
+            if (JSONdata.success != "true")
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }
