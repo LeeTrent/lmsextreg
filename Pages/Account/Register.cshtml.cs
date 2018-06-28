@@ -56,12 +56,6 @@ namespace lmsextreg.Pages.Account
         public InputModel Input { get; set; }
         public SelectList AgencySelectList { get; set; }
         public SelectList SubAgencySelectList { get; set; }     
-
-        // [BindProperty]
-		// [Display(Name = "I agree to these Terms and Conditions")]
-		// [Range(typeof(bool), "true", "true", ErrorMessage = "Terms and Conditions must be agreed to in order to register.")]
-		// public bool TermsAndConditions { get; set; }
-
         public string ReturnUrl { get; set; }
 
         public class InputModel
@@ -123,15 +117,7 @@ namespace lmsextreg.Pages.Account
             Console.WriteLine("recaptchaSecret: " + recaptchaSecret);              
 
             ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];            
-            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
-
-            // Console.WriteLine("ReCaptchaKey:");
-            // Console.WriteLine(_configuration.GetSection("GoogleReCaptcha:key").Value);
-            // Console.WriteLine("ReCaptchaKey:");
-            // Console.WriteLine(ViewData["ReCaptchaKey"]);
-
-            ReturnUrl = returnUrl;
-        }
+         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -167,8 +153,7 @@ namespace lmsextreg.Pages.Account
                 Console.WriteLine("recaptchaKey: " + recaptchaKey);
 
                 ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
-                //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
-
+ 
                 return Page();
             }
 
