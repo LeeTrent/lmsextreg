@@ -117,6 +117,33 @@ namespace lmsextreg.Pages.Account
             Console.WriteLine("recaptchaSecret: " + recaptchaSecret);              
 
             ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];            
+
+            /*************************************************************************************************
+                The IsLocalUrl method protects users from being inadvertently redirected to a malicious site.
+                You can log the details of the URL that was provided when a non-local URL is supplied in a
+                situation where you expected a local URL. Logging redirect URLs may help in diagnosing
+                redirection attacks.
+            *************************************************************************************************/
+            Console.WriteLine("[Register.onGet] Passed-in returnUrl: '" + "'" + returnUrl);
+            Console.WriteLine("[Register.onGet] Passed-in returnUrl IS NULL: " + (returnUrl == null) );          
+
+            if ( returnUrl == null ) 
+            {
+                ReturnUrl = null;
+            }
+            if ( returnUrl != null )
+            {
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    Console.WriteLine("returnUrl IS local");
+                    ReturnUrl = returnUrl;
+                }
+                else
+                {
+                    Console.WriteLine("returnUrl IS NOT local - setting to NULL");
+                    ReturnUrl = null;
+                }
+            }
          }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -130,7 +157,32 @@ namespace lmsextreg.Pages.Account
 				return Page();
 			}             
  
-            ReturnUrl = returnUrl;
+            /*************************************************************************************************
+                The IsLocalUrl method protects users from being inadvertently redirected to a malicious site.
+                You can log the details of the URL that was provided when a non-local URL is supplied in a
+                situation where you expected a local URL. Logging redirect URLs may help in diagnosing
+                redirection attacks.
+            *************************************************************************************************/
+            Console.WriteLine("[Register.onPost] Passed-in returnUrl: '" + "'" + returnUrl);
+            Console.WriteLine("[Register.onPost] Passed-in returnUrl IS NULL: " + (returnUrl == null) );          
+
+            if ( returnUrl == null ) 
+            {
+                ReturnUrl = null;
+            }
+            if ( returnUrl != null )
+            {
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    Console.WriteLine("returnUrl IS local");
+                    ReturnUrl = returnUrl;
+                }
+                else
+                {
+                    Console.WriteLine("returnUrl IS NOT local - setting to NULL");
+                    ReturnUrl = null;
+                }
+            }
             
             var recaptchaSecret = _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET];
             Console.WriteLine("recaptchaSecret: " + recaptchaSecret);            
