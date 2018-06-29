@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
+using lmsextreg.Utils;
 
 namespace lmsextreg.Pages.Account
 {
@@ -61,12 +62,12 @@ namespace lmsextreg.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            ReturnUrl = returnUrl;
+            PageModelUtil.EnsureLocalUrl(this, returnUrl);
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            ReturnUrl = returnUrl;
+            PageModelUtil.EnsureLocalUrl(this, returnUrl);
 
             if (ModelState.IsValid)
             {
