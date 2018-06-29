@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Utils;
+using lmsextreg.Constants;
 
 namespace lmsextreg.Pages.Account
 {
@@ -19,11 +21,13 @@ namespace lmsextreg.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IConfiguration _configuration;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, IConfiguration config)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _configuration = config;
         }
 
         [BindProperty]
@@ -62,12 +66,39 @@ namespace lmsextreg.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            PageModelUtil.EnsureLocalUrl(this, returnUrl);
+            Console.WriteLine("[Login.OnGet] returnUrl: '" + returnUrl + "'");
+            this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
+            Console.WriteLine("[Login.OnGet] this.ReturnUrl: '" + this.ReturnUrl + "'");
+
+            ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY]; 
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            PageModelUtil.EnsureLocalUrl(this, returnUrl);
+        {          
+            this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
+
+            Console.WriteLine("[Login.OnPost] returnUrl: '" + returnUrl + "'");
+            this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
+            Console.WriteLine("[Login.OnPost] this.ReturnUrl: '" + this.ReturnUrl + "'");
+
+            if  ( ! PageModelUtil.ReCaptchaPassed
+                    (
+                        Request.Form["g-recaptcha-response"],
+                        _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET],
+                        _logger
+                    )
+                )
+            {
+                Console.WriteLine("[Login.OnPostAsync] reCAPTCHA FAILED");
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // RECAPTCHA FAILED - redisplay form
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ModelState.AddModelError(string.Empty, "You failed the CAPTCHA. Are you a robot?");
+                ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
+                return Page();
+            }
+
+            Console.WriteLine("[Login.OnPostAsync] reCAPTCHA PASSED");
 
             if (ModelState.IsValid)
             {

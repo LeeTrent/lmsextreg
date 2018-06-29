@@ -23,19 +23,20 @@ namespace lmsextreg.Utils
 
             string returnUrl = null;
 
-            if  ( passedInUrl != null 
-                    && pageModel.Url.IsLocalUrl(passedInUrl)
-                )
+            if  ( passedInUrl != null )
             {
-                Console.WriteLine("[PageModelUtil.EnsureLocalUrl] " + passedInUrl + " IS local");
-                returnUrl = passedInUrl;
+                if ( pageModel.Url.IsLocalUrl(passedInUrl) )
+                {
+                    Console.WriteLine("[PageModelUtil.EnsureLocalUrl] " + passedInUrl + " IS local");
+                    returnUrl = passedInUrl;
+                } 
+                else
+                {
+                    Console.WriteLine("[PageModelUtil.EnsureLocalUrl] " +  passedInUrl + " IS NOT local - returning NULL");
+                    returnUrl = null;
+                }
             }
-
-            if ( passedInUrl != null )
-            {
-                Console.WriteLine("[PageModelUtil.EnsureLocalUrl] " +  passedInUrl + " IS NOT local - returning NULL");
-            }
-
+ 
             return returnUrl;                  
         }
 
