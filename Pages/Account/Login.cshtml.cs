@@ -51,7 +51,7 @@ namespace lmsextreg.Pages.Account
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
+            public bool RememberMe { get; set; } = false;
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -66,21 +66,19 @@ namespace lmsextreg.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            Console.WriteLine("[Login.OnGet] returnUrl: '" + returnUrl + "'");
+            // Make sure that passed-in 'returnUrl' is of a local origin
             this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
-            Console.WriteLine("[Login.OnGet] this.ReturnUrl: '" + this.ReturnUrl + "'");
 
+            // I'm not a robot
             ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY]; 
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {          
+            // Make sure that passed-in 'returnUrl' is of a local origin
             this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
 
-            Console.WriteLine("[Login.OnPost] returnUrl: '" + returnUrl + "'");
-            this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
-            Console.WriteLine("[Login.OnPost] this.ReturnUrl: '" + this.ReturnUrl + "'");
-
+             // "I'm not a robot" check ...
             if  ( ! PageModelUtil.ReCaptchaPassed
                     (
                         Request.Form["g-recaptcha-response"],
