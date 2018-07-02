@@ -117,10 +117,10 @@ namespace lmsextreg.Data
                 dbContext, StatusCodeConstants.APPROVED,  StatusCodeConstants.REVOKED,  TransitionCodeConstants.APPROVED_TO_REVOKED,  TransitionLabelConstants.APPROVED_TO_REVOKED
             );
 
-            // await EnsureStatusTransition
-            // (
-            //     dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
-            // );            
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
+            );            
 
             Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
         }
@@ -221,13 +221,11 @@ namespace lmsextreg.Data
             {
                 user = new ApplicationUser
                 {
-                    // UserName = userName,
-                    // EmailConfirmed = true,
-                    // AgencyID = agencyID,
-                    // SubAgencyID = subagencyID
-
                     UserName = userName,
-                    EmailConfirmed = true
+                    Email = userName,
+                    EmailConfirmed = true,
+                    AgencyID = agencyID,
+                    SubAgencyID = subagencyID
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);
@@ -292,6 +290,7 @@ namespace lmsextreg.Data
                     // SubAgencyID = subagencyID
 
                     UserName = userName,
+                    Email = userName,
                     EmailConfirmed = true,   
                     FirstName = firstName,
                     LastName = lastName             

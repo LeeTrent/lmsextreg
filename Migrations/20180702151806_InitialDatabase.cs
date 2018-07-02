@@ -158,6 +158,7 @@ namespace lmsextreg.Migrations
                     PasswordHash = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    RulesOfBehaviorAgreedTo = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
                     SubAgencyID = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),

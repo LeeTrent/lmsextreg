@@ -132,9 +132,9 @@ namespace lmsextreg.Pages.Account
  
             ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
 
-            var recaptchaSecret = _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET];
-            Console.WriteLine("recaptchaSecret: " + recaptchaSecret);            
-
+            ///////////////////////////////////////////////////////////////////   
+            // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////   
             if  ( ! ReCaptchaPassed
                     (
                         Request.Form["g-recaptcha-response"], // that's how you get it from the Request object

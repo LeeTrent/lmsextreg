@@ -78,7 +78,9 @@ namespace lmsextreg.Pages.Account
             // Make sure that passed-in 'returnUrl' is of a local origin
             this.ReturnUrl = PageModelUtil.EnsureLocalUrl(this, returnUrl);
 
-             // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////   
+            // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////   
             if  ( ! PageModelUtil.ReCaptchaPassed
                     (
                         Request.Form["g-recaptcha-response"],

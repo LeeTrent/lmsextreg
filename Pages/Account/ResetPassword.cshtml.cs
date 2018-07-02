@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
+using lmsextreg.Constants;
+using lmsextreg.Utils;  
 
 namespace lmsextreg.Pages.Account
 {
@@ -15,10 +19,14 @@ namespace lmsextreg.Pages.Account
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<LoginModel> _logger;
 
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager)
+        public ResetPasswordModel(UserManager<ApplicationUser> userManager, IConfiguration config, ILogger<LoginModel> logger)
         {
             _userManager = userManager;
+            _configuration = config;
+            _logger = logger;            
         }
 
         [BindProperty]
@@ -55,12 +63,35 @@ namespace lmsextreg.Pages.Account
                 {
                     Code = code
                 };
+                ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY]; 
                 return Page();
             }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ///////////////////////////////////////////////////////////////////   
+            // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////               
+            if  ( ! PageModelUtil.ReCaptchaPassed
+                    (
+                        Request.Form["g-recaptcha-response"],
+                        _configuration[MiscConstants.GOOGLE_RECAPTCHA_SECRET],
+                        _logger
+                    )
+                )
+            {
+                Console.WriteLine("[ResetPassword.OnPostAsync] reCAPTCHA FAILED");
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // RECAPTCHA FAILED - redisplay form
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ModelState.AddModelError(string.Empty, "You failed the CAPTCHA. Are you a robot?");
+                ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
+                return Page();
+            }
+            Console.WriteLine("[Login.OnPostAsync] reCAPTCHA PASSED");
+
+
             if (!ModelState.IsValid)
             {
                 return Page();

@@ -54,7 +54,9 @@ namespace lmsextreg.Pages.Account
         {
             Console.WriteLine("[ForgotPassword.OnPostAsync]: BEGIN");
 
-             // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////   
+            // "I'm not a robot" check ...
+            ///////////////////////////////////////////////////////////////////   
             if  ( ! PageModelUtil.ReCaptchaPassed
                     (
                         Request.Form["g-recaptcha-response"],
