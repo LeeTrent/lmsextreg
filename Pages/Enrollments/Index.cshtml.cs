@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using lmsextreg.Data;
 using lmsextreg.Models;
+using lmsextreg.Constants;
 
 namespace lmsextreg.Pages.Enrollments
 {
@@ -24,6 +25,8 @@ namespace lmsextreg.Pages.Enrollments
             _userManager = usrMgr;
         }
 
+        public string PENDING   = StatusCodeConstants.PENDING;
+        public string WITHDRAWN = StatusCodeConstants.WITHDRAWN;
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
 
         public ApplicationUser LoggedInUser {get;set;}

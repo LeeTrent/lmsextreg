@@ -47,7 +47,15 @@
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                <a asp-page="./Delete"  asp-route-id="@item.ProgramEnrollmentID">Withdraw</a>
+                @if ( item.StatusCode == @Model.PENDING)
+                {
+                    <a asp-page="./Withdraw"  asp-route-id="@item.ProgramEnrollmentID">Withdraw</a>
+                }
+               @if ( item.StatusCode == @Model.WITHDRAWN)
+                {
+                    <span>None</span>
+                }                
+
             </td>
         </tr>
 }
