@@ -21,7 +21,10 @@
                 </th>     
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].Student)
-                </th>                  
+                </th>             
+                <th>
+                    @Html.DisplayNameFor(model => model.ProgramEnrollment[0].Student.Agency.AgencyName)
+                </th>                      
                 <th>
                     @Html.DisplayNameFor(model => model.ProgramEnrollment[0].EnrollmentStatus)
                 </th>                       
@@ -32,14 +35,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.ProgramEnrollment) {
+@foreach (var item in Model.ProgramEnrollment) 
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LMSProgram.LongName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Student.FullName)
-            </td>            
+            </td>    
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.Agency.AgencyName)
+            </td>                     
             <td>
                 @Html.DisplayFor(modelItem => item.EnrollmentStatus.StatusLabel)
             </td>                    
@@ -49,13 +56,14 @@
             <td>
                 @if ( item.StatusCode == @Model.PENDING)
                 {
+                    <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
+                    <span> | </span>
                     <a asp-page="./Withdraw"  asp-route-id="@item.ProgramEnrollmentID">Withdraw</a>
                 }
-               @if ( item.StatusCode == @Model.WITHDRAWN)
+               @if ( item.StatusCode != @Model.PENDING)
                 {
-                    <span>None</span>
+                    <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
                 }                
-
             </td>
         </tr>
 }

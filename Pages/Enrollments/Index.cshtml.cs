@@ -39,8 +39,8 @@ namespace lmsextreg.Pages.Enrollments
             ProgramEnrollment = await _context.ProgramEnrollments
                 .Where(p => p.StudentUserId == LoggedInUser.Id)
                 .Include(p => p.LMSProgram)
+                .Include ( pe => pe.Student).ThenInclude(s => s.Agency)
                 .Include(p => p.EnrollmentStatus)
-                .Include(p => p.Student)
                 .ToListAsync();
            
             var userID = _userManager.GetUserId(User);
