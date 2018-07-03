@@ -4,10 +4,10 @@
 @{
     ViewData["Title"] = "Approvals";
 }
-<h2>Review</h2>
+<h2>@Html.DisplayFor(model => model.ProgramEnrollment.LMSProgram.LongName)</h2>
+<h4>Enrollment Application Details</h4>
+<hr />
 <div>
-    <h4>Enrollment Application</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>Applicant's Name:</dt>
         <dd>
@@ -29,9 +29,13 @@
         <dd>
             @Html.DisplayFor(model => model.ProgramEnrollment.Student.JobTitle)
         </dd>  
+        <dt>Program Name:</dt>  
+        <dd>
+            @Html.DisplayFor(model => model.ProgramEnrollment.LMSProgram.LongName)
+        </dd>        
         <dt>Enrollment Status:</dt>   
         <dd>
-            @Html.DisplayFor(model => model.ProgramEnrollment.EnrollmentStatus.StatusLabel)
+            <span style="border: 2px solid red;font-weight:bold;">@Html.DisplayFor(model => model.ProgramEnrollment.EnrollmentStatus.StatusLabel)</span>
         </dd>     
         <dt>Enrollment History:</dt>   
         <dd>
