@@ -44,6 +44,9 @@ namespace lmsextreg.Utils
         {
             HttpClient httpClient = new HttpClient();
             var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={gRecaptchaResponse}").Result;
+            
+            Console.WriteLine("[PageModelUtil.ReCaptchaPassed] res.StatusCode: " + res.StatusCode);
+            
             if (res.StatusCode != HttpStatusCode.OK)
             {
                 logger.LogError("Error while sending request to ReCaptcha");
@@ -52,6 +55,9 @@ namespace lmsextreg.Utils
             
             string JSONres = res.Content.ReadAsStringAsync().Result;
             dynamic JSONdata = JObject.Parse(JSONres);
+
+            Console.WriteLine("[PageModelUtil.ReCaptchaPassed] JSONres: " + JSONres);
+            Console.WriteLine("[PageModelUtil.ReCaptchaPassed] JSONdata: " + JSONdata);
 
             if (JSONdata.success != "true")
             {
