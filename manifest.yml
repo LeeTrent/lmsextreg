@@ -1,7 +1,7 @@
 ---
 applications:
 - name: lmsext
-  buildpack: dotnet_core_buildpack
+  buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git#v2.0.6
   random-route: false
   memory: 512M
   env:
