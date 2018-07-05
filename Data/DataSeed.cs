@@ -271,6 +271,8 @@ namespace lmsextreg.Data
             await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "Student", "#9", "ST", "ST00");
             await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "Student", "#10", "ST", "ST00");
 
+            await EnsureStudent(svcProvider, "lee.trent.1@gmail.com", tempPW, "Lee", "Trent", "DJ", "DJ02");
+
             Console.WriteLine("DataSeed.EnsureStudents: END");
         }
 
@@ -297,7 +299,9 @@ namespace lmsextreg.Data
                     Email = userName,
                     EmailConfirmed = true,   
                     FirstName = firstName,
-                    LastName = lastName             
+                    LastName = lastName,       
+                    AgencyID = agencyID,
+                    SubAgencyID = subagencyID                          
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);

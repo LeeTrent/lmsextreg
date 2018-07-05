@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using lmsextreg.Constants;
 using lmsextreg.Data;
 using lmsextreg.Models;
+using lmsextreg.Services;
 
 namespace lmsextreg.Pages.Approvals
 {
@@ -20,11 +21,17 @@ namespace lmsextreg.Pages.Approvals
     {
          private readonly ApplicationDbContext _dbContext;
          private readonly UserManager<ApplicationUser> _userManager;
+         private readonly IEmailSender _emailSender;
 
-        public ReviewModel(lmsextreg.Data.ApplicationDbContext dbCntx, UserManager<ApplicationUser> usrMgr)
+        public ReviewModel  (
+                                lmsextreg.Data.ApplicationDbContext dbCntx, 
+                                UserManager<ApplicationUser> usrMgr,
+                                IEmailSender emailSndr
+                            )
         {
             _dbContext = dbCntx;
             _userManager = usrMgr;
+            _emailSender = emailSndr;
         }         
 
         public class InputModel
@@ -139,18 +146,11 @@ namespace lmsextreg.Pages.Approvals
                 ShowRevokeButton    = false;
             }                                    
 
-
-
-            
             return Page();                              
         }
 
         public async Task<IActionResult> OnPostApproveAsync(int id)
         {
-            Console.WriteLine("Approvals.Review.OnPostApproveAsync():");
-            Console.WriteLine("programEnrollmentID: " + id);
-            Console.WriteLine("Remarks: " + Input.Remarks);
-
             return await this.OnPostAsync
             (
                 id, 
@@ -161,10 +161,6 @@ namespace lmsextreg.Pages.Approvals
 
         public async Task<IActionResult> OnPostDenyAsync(int id)
         {
-            Console.WriteLine("Approvals.Review.OnPostDenyAsync():");
-            Console.WriteLine("programEnrollmentID: " + id);
-            Console.WriteLine("Remarks: " + Input.Remarks);
-
             return await this.OnPostAsync
             (
                 id, 
@@ -174,10 +170,6 @@ namespace lmsextreg.Pages.Approvals
         }
         public async Task<IActionResult> OnPostRevokeAsync(int id)
         {
-            Console.WriteLine("Approvals.Review.OnPostRevokeAsync():");
-            Console.WriteLine("programEnrollmentID: " + id);
-            Console.WriteLine("Remarks: " + Input.Remarks);
-
             return await this.OnPostAsync
             (
                 id, 
@@ -198,6 +190,7 @@ namespace lmsextreg.Pages.Approvals
             ////////////////////////////////////////////////////////////
             var lvProgramEnrollment = await _dbContext.ProgramEnrollments
                                         .Where(pe => pe.ProgramEnrollmentID == programEnrollmentID) 
+                                        .AsNoTracking()
                                         .SingleOrDefaultAsync();     
 
             ////////////////////////////////////////////////////////////
@@ -227,9 +220,9 @@ namespace lmsextreg.Pages.Approvals
 
             lvProgramEnrollment = null;
             lvProgramEnrollment = await _dbContext.ProgramEnrollments
-                    .FromSql(sql, programEnrollmentID, _userManager.GetUserId(User))
-                    .Include(pe => pe.EnrollmentHistory)
-                    .SingleOrDefaultAsync();
+                                .FromSql(sql, programEnrollmentID, _userManager.GetUserId(User))
+                                .Include(pe => pe.EnrollmentHistory)
+                                .SingleOrDefaultAsync();
 
             /////////////////////////////////////////////////////////////
             // We already know that record exists from Step #1 so if we
@@ -247,6 +240,7 @@ namespace lmsextreg.Pages.Approvals
             ////////////////////////////////////////////////////////////            
             var lvStatusTranstion = await _dbContext.StatusTransitions
                                     .Where(st => st.TransitionCode == statusTransitionCode)
+                                    .AsNoTracking()
                                     .SingleOrDefaultAsync();
             
             ////////////////////////////////////////////////////////////////
@@ -284,6 +278,29 @@ namespace lmsextreg.Pages.Approvals
             lvProgramEnrollment.ApproverUserId = _userManager.GetUserId(User);
             _dbContext.ProgramEnrollments.Update(lvProgramEnrollment);
             await _dbContext.SaveChangesAsync();
+
+            /////////////////////////////////////////////////////////////////////
+            // Send email notification to student, advising him/her of
+            // program enrollment status
+            /////////////////////////////////////////////////////////////////////
+            lvProgramEnrollment = null;
+            lvProgramEnrollment = await _dbContext.ProgramEnrollments
+                                .Where      ( pe => pe.ProgramEnrollmentID == programEnrollmentID)
+                                .Include    ( pe => pe.LMSProgram)
+                                .Include    ( pe => pe.Student)
+                                .Include    ( pe => pe.EnrollmentStatus)
+                                .AsNoTracking()
+                                .SingleOrDefaultAsync(); 
+
+            ApplicationUser student =  lvProgramEnrollment.Student;
+            string email = student.Email;
+            string subject  = lvProgramEnrollment.LMSProgram.LongName 
+                            + " Enrollment Status";
+            string message  = "Your request to enroll in the " 
+                            + lvProgramEnrollment.LMSProgram.LongName 
+                            + " has been " 
+                            + lvProgramEnrollment.EnrollmentStatus.StatusLabel;
+            await _emailSender.SendEmailAsync(email, subject, message);
 
             /////////////////////////////////////////////////////////////////
             // Redirect to Approval Index Page

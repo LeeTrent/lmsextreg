@@ -126,11 +126,15 @@ namespace lmsextreg.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
                     return Page();
                 }
             }
 
+            ///////////////////////////////////////////////////////////////////////////////
             // If we got this far, something failed, redisplay form
+            ///////////////////////////////////////////////////////////////////////////////            
+            ViewData["ReCaptchaKey"] = _configuration[MiscConstants.GOOGLE_RECAPTCHA_KEY];
             return Page();
         }
     }

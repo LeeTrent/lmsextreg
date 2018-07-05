@@ -153,37 +153,5 @@ namespace lmsextreg.Pages.Enrollments
         }        
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-        
-        // public IActionResult OnGet()
-        // {
-        // ViewData["LMSProgramID"] = new SelectList(_context.LMSPrograms, "LMSProgramID", "LongName");
-        //     return Page();
-        // }
-
-        // [BindProperty]
-        // public ProgramEnrollment ProgramEnrollment { get; set; }
-
-        // public async Task<IActionResult> OnPostAsync()
-        // {
-        //     Console.WriteLine("ModelState.IsValid: " + ModelState.IsValid);
-            
-        //     if (!ModelState.IsValid)
-        //     {
-        //         Console.WriteLine("ModelState IS NOT valid");
-        //         return Page();
-        //      }
-            
-        //     Console.WriteLine("ModelState IS valid");
-            
-        //     ProgramEnrollment.LearnerUserId = _userManager.GetUserId(User);
-        //     ProgramEnrollment.UserCreated   = _userManager.GetUserId(User);
-        //     ProgramEnrollment.DateCreated   = DateTime.Now;
-        //     ProgramEnrollment.Status.StatusCode = StatusConstants.PENDING;
-
-        //     _context.ProgramEnrollments.Add(ProgramEnrollment);
-        //     await _context.SaveChangesAsync();
-
-        //     return RedirectToPage("./Index");
-        // }
     }
 }
