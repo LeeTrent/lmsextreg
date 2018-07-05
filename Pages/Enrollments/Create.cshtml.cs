@@ -145,6 +145,10 @@ namespace lmsextreg.Pages.Enrollments
                 string message  = student.FullName + " has requested to enroll in " + approverObj.LMSProgram.LongName;
                 await _emailSender.SendEmailAsync(email, subject, message);
             }
+
+            /////////////////////////////////////////////////////////////////
+            // Redirect to Enrollmentl Index Page
+            /////////////////////////////////////////////////////////////////            
             return RedirectToPage("./Index");
         }        
 
