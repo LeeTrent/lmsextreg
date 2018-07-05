@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
 using lmsextreg.Models;
 using lmsextreg.Constants;
+using lmsextreg.Services;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,15 +26,19 @@ namespace lmsextreg.Pages.Enrollments
         private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly IAuthorizationService _authorizationService;
+        private readonly IEmailSender _emailSender;
 
-        public CreateModel( lmsextreg.Data.ApplicationDbContext context,
-                            UserManager<ApplicationUser> userMgr,
-                            IAuthorizationService authorizationSvc
+        public CreateModel  ( 
+                                lmsextreg.Data.ApplicationDbContext context,
+                                UserManager<ApplicationUser> userMgr,
+                                IAuthorizationService authorizationSvc,
+                                IEmailSender emailSender
                             )
         {
             _context = context;
             _userManager = userMgr;
             _authorizationService = authorizationSvc;
+            _emailSender = emailSender;
         }
 
         public class InputModel
@@ -97,7 +102,7 @@ namespace lmsextreg.Pages.Enrollments
             // created EnrollmentHistory to the EnrollmentHistory
             // collection
             ////////////////////////////////////////////////////////////            
-            var pe = new ProgramEnrollment
+            var programEnrollment = new ProgramEnrollment
             {
                 LMSProgramID         = Int32.Parse(Input.LMSProgramID),
                 StudentUserId        = _userManager.GetUserId(User),
@@ -120,9 +125,26 @@ namespace lmsextreg.Pages.Enrollments
             /////////////////////////////////////////////////////////////////////
             // Persist ProgramEnrollment plus EnrollmentHistory to the database
             /////////////////////////////////////////////////////////////////////
-            _context.ProgramEnrollments.Add(pe);
+            _context.ProgramEnrollments.Add(programEnrollment);
             await _context.SaveChangesAsync();
 
+            /////////////////////////////////////////////////////////////////////
+            // Send email notification to approvers
+            /////////////////////////////////////////////////////////////////////
+            IList<ProgramApprover> approverList = await _context.ProgramApprovers
+                                                .Where ( pa => pa.LMSProgramID == programEnrollment.LMSProgramID )
+                                                .Include ( pa => pa.Approver)
+                                                .Include ( pa => pa.LMSProgram )
+                                                .ToListAsync(); 
+
+            ApplicationUser student = await GetCurrentUserAsync();
+            foreach (ProgramApprover approverObj in approverList)
+            {
+                string email    = approverObj.Approver.Email;
+                string subject  = "Program Enrollment Request (" + approverObj.LMSProgram.LongName + ")"; 
+                string message  = student.FullName + " has requested to enroll in " + approverObj.LMSProgram.LongName;
+                await _emailSender.SendEmailAsync(email, subject, message);
+            }
             return RedirectToPage("./Index");
         }        
 

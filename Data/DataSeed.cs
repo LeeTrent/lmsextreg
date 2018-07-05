@@ -156,6 +156,7 @@ namespace lmsextreg.Data
             await EnsureProgram(dbContext, "PC", "Program C");
             await EnsureProgram(dbContext, "PD", "Program D");
             await EnsureProgram(dbContext, "PE", "Program E");
+            await EnsureProgram(dbContext, "PF", "Program F");
 
             Console.WriteLine("DataSeed.EnsurePrograms: END");
         }
@@ -202,7 +203,10 @@ namespace lmsextreg.Data
             await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "GS", "GS03", "PE");                        
             await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "GS", "GS03", "PE");                        
             await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "GS", "GS03", "PE");                                                                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "GS", "GS03", "PE");    
+
+            await EnsureApprover(svcProvider, "lee.trent@gsa.gov", tempPW, "GS", "GS03", "PF");    
+            await EnsureApprover(svcProvider, "lee.trent@icloud.com", tempPW, "GS", "GS03", "PF");    
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }

@@ -31,7 +31,7 @@ namespace lmsextreg.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("LMSUserAdmin@gsa.com", "LMS User Registration"),
+                From = new EmailAddress("LMSExtRegAdmin@gsa.com", "LMS Registration and Enrollment"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
