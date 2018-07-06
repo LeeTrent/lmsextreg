@@ -162,16 +162,17 @@ namespace lmsextreg.Pages.Account
 
                 var user = new ApplicationUser
                 { 
-                    UserName        = Input.Email, 
-                    Email           = Input.Email,
-                    FirstName       = Input.FirstName,
-                    MiddleName      = Input.MiddleName,
-                    LastName        = Input.LastName,
-                    JobTitle        = Input.JobTitle,
-                    AgencyID        = Input.AgencyID,
-                    SubAgencyID     = Input.SubAgencyID,
-                    DateRegistered  = DateTime.Now,
-                    DateExpired     = DateTime.Now.AddDays(365),
+                    UserName                = Input.Email, 
+                    Email                   = Input.Email,
+                    FirstName               = Input.FirstName,
+                    MiddleName              = Input.MiddleName,
+                    LastName                = Input.LastName,
+                    JobTitle                = Input.JobTitle,
+                    AgencyID                = Input.AgencyID,
+                    SubAgencyID             = Input.SubAgencyID,
+                    DateRegistered          = DateTime.Now,
+                    DateAccountExpires      = DateTime.Now.AddDays(AccountConstants.DAYS_ACCOUNT_EXPIRES),
+                    DatePasswordExpires     =  DateTime.Now.AddDays(AccountConstants.DAYS_PASSWORD_EXPIRES),
                     RulesOfBehaviorAgreedTo = Input.RulesOfBehaviorAgreedTo
                 };
 

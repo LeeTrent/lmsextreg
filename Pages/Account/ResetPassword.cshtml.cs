@@ -53,6 +53,7 @@ namespace lmsextreg.Pages.Account
 
         public IActionResult OnGet(string code = null)
         {
+            Console.WriteLine("[ResetPassword.OnGet] code: " + code);
             if (code == null)
             {
                 throw new ApplicationException("A code must be supplied for password reset.");
@@ -70,6 +71,8 @@ namespace lmsextreg.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Console.WriteLine("[ResetPassword.OnPostAsync]: BEGIN");
+            
             ///////////////////////////////////////////////////////////////////   
             // "I'm not a robot" check ...
             ///////////////////////////////////////////////////////////////////               

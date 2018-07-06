@@ -11,10 +11,38 @@ namespace lmsextreg.Data
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        [Required]
         public string FirstName { get; set; }
+        
         public string MiddleName { get; set; }
+        
+        [Required]
         public string LastName { get; set; }
 
+        [Required]
+        public string JobTitle { get; set; }   
+        
+        [Required]
+        public string AgencyID { get; set; }
+                
+        [Required]
+        public string SubAgencyID { get; set; }
+              
+        [Required]
+        public DateTime DateRegistered { get; set; }
+        
+        [Required]
+        public DateTime DateAccountExpires { get; set; }
+        
+        [Required]
+        public DateTime DatePasswordExpires { get; set; }
+
+        [Required]
+        public bool RulesOfBehaviorAgreedTo { get; set; }
+
+        ///////////////////////////////////
+        // Full Name: Derived Value
+        ///////////////////////////////////        
         [Display(Name = "Full Name")]
         public string FullName
         {
@@ -24,14 +52,14 @@ namespace lmsextreg.Data
             }
         }
 
-        public string JobTitle { get; set; }   
-        public string AgencyID { get; set; }
+        ///////////////////////////////////
+        // Navigation Property
+        ///////////////////////////////////        
         public Agency Agency { get; set; }
-        public string SubAgencyID { get; set; }
+        
+        ///////////////////////////////////
+        // Navigation Property
+        ///////////////////////////////////        
         public SubAgency SubAgency { get; set; }
-        public DateTime DateRegistered { get; set; }
-        public DateTime DateExpired { get; set; }
-        public bool RulesOfBehaviorAgreedTo { get; set; }
-
     }
 }

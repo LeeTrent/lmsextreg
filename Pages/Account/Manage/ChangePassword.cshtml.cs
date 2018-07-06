@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using lmsextreg.Data;
+using lmsextreg.Constants;
 
 namespace lmsextreg.Pages.Account.Manage
 {
@@ -54,13 +55,19 @@ namespace lmsextreg.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            Console.WriteLine("[ChangePassword.OnGetAsync]: BEGIN");
+
             var user = await _userManager.GetUserAsync(User);
+            Console.WriteLine("[ChangePassword.OnGetAsync]: \n User: " + user);
+
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
+            Console.WriteLine("[ChangePassword.OnGetAsync]: hasPassword: " + hasPassword);
+
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -71,6 +78,8 @@ namespace lmsextreg.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Console.WriteLine("[ChangePassword.OnPostAsync]: BEGIN");
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -81,8 +90,12 @@ namespace lmsextreg.Pages.Account.Manage
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+           
+            Console.WriteLine("[ChangePassword.OnPostAsync]: \n User: " + user);
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            Console.WriteLine("[ChangePassword.OnPostAsync]: changePasswordResult.Succeeded: " + changePasswordResult.Succeeded);
+
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -95,6 +108,15 @@ namespace lmsextreg.Pages.Account.Manage
             await _signInManager.SignInAsync(user, isPersistent: false);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
+
+            /////////////////////////////////////////////////////////////
+            // Now that password had been successfully changed,
+            // update the ApplicationUser.DatePasswordExpires property 
+            // to NOW + AccountConstants.DAYS_PASSWORD_EXPIRES
+            ////////////////////////////////////////////////////////////
+            user.DatePasswordExpires = DateTime.Now.AddDays(AccountConstants.DAYS_PASSWORD_EXPIRES);
+            IdentityResult updateDatePasswordExpiresResult = await _userManager.UpdateAsync(user);
+            Console.WriteLine("[ChangePassword.OnPostAsync]: updateDatePasswordExpiresResult.Succeeded: " + updateDatePasswordExpiresResult.Succeeded);
 
             return RedirectToPage();
         }

@@ -185,33 +185,34 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureApprovers: BEGIN");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "GS", "GS30", "PA" );
+            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "Approver", "PA1", "GS", "GS30", "PA" );
 
-            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "GS", "GS30", "PB");
-            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "GS", "GS30", "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "Approver", "PB1", "GS", "GS30", "PB");
+            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "Approver", "PB2", "GS", "GS30", "PB");
 
-            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "GS", "GS30", "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "GS", "GS30", "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "GS", "GS30", "PC");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "Approver", "PC1", "GS", "GS30", "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC");
+            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "GS", "GS03", "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "GS", "GS03", "PD");                                                
-            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "GS", "GS03", "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD");                                                
+            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "Approver", "PD4", "GS", "GS03", "PD");                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "GS", "GS03", "PE");    
+            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "Approver", "PE1", "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "Approver", "PE2", "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "Approver", "PE3", "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "Approver", "PE4", "GS", "GS03", "PE");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "Approver", "PE5", "GS", "GS03", "PE");    
 
-            await EnsureApprover(svcProvider, "lee.trent@gsa.gov", tempPW, "GS", "GS03", "PF");    
-            await EnsureApprover(svcProvider, "lee.trent@icloud.com", tempPW, "GS", "GS03", "PF");    
+            await EnsureApprover(svcProvider, "lee.trent@gsa.gov",          tempPW, "Lee", "Trent - PF1", "GS", "GS03", "PF");    
+            await EnsureApprover(svcProvider, "lee.trent@icloud.com",       tempPW, "Lee", "Trent - PF2", "GS", "GS03", "PF");    
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }
   
         private static async Task EnsureApprover(IServiceProvider svcProvider, string userName, string tempPW, 
+                                                    string firstName, string lastName,
                                                     string agencyID, string subagencyID, string programShortName)
         {
              Console.WriteLine("DataSeed.EnsureApprover: BEGIN");
@@ -228,8 +229,15 @@ namespace lmsextreg.Data
                     UserName = userName,
                     Email = userName,
                     EmailConfirmed = true,
+                    FirstName = firstName,
+                    LastName = lastName, 
+                    JobTitle = "Program Administrator",       
                     AgencyID = agencyID,
-                    SubAgencyID = subagencyID
+                    SubAgencyID = subagencyID,
+                    DateRegistered = DateTime.Now,
+                    DateAccountExpires = DateTime.Now.AddDays(AccountConstants.DAYS_ACCOUNT_EXPIRES),
+                    DatePasswordExpires = DateTime.Now,
+                    RulesOfBehaviorAgreedTo = true                             
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);
@@ -290,18 +298,18 @@ namespace lmsextreg.Data
             {
                 user = new ApplicationUser
                 {
-                    // UserName = userName,
-                    // EmailConfirmed = true,
-                    // AgencyID = agencyID,
-                    // SubAgencyID = subagencyID
-
                     UserName = userName,
                     Email = userName,
                     EmailConfirmed = true,   
                     FirstName = firstName,
-                    LastName = lastName,       
+                    LastName = lastName, 
+                    JobTitle = "IT Specialist",      
                     AgencyID = agencyID,
-                    SubAgencyID = subagencyID                          
+                    SubAgencyID = subagencyID,
+                    DateRegistered = DateTime.Now,
+                    DateAccountExpires = DateTime.Now.AddDays(AccountConstants.DAYS_ACCOUNT_EXPIRES),
+                    DatePasswordExpires = DateTime.Now.AddDays(AccountConstants.DAYS_PASSWORD_EXPIRES),
+                    RulesOfBehaviorAgreedTo = true                          
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);

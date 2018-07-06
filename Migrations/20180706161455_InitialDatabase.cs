@@ -141,15 +141,16 @@ namespace lmsextreg.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    AgencyID = table.Column<string>(nullable: true),
+                    AgencyID = table.Column<string>(nullable: false),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
-                    DateExpired = table.Column<DateTime>(nullable: false),
+                    DateAccountExpires = table.Column<DateTime>(nullable: false),
+                    DatePasswordExpires = table.Column<DateTime>(nullable: false),
                     DateRegistered = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    JobTitle = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: false),
+                    JobTitle = table.Column<string>(nullable: false),
+                    LastName = table.Column<string>(nullable: false),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     MiddleName = table.Column<string>(nullable: true),
@@ -160,7 +161,7 @@ namespace lmsextreg.Migrations
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     RulesOfBehaviorAgreedTo = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
-                    SubAgencyID = table.Column<string>(nullable: true),
+                    SubAgencyID = table.Column<string>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true)
                 },
@@ -172,13 +173,13 @@ namespace lmsextreg.Migrations
                         column: x => x.AgencyID,
                         principalTable: "Agency",
                         principalColumn: "AgencyID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_SubAgency_SubAgencyID",
                         column: x => x.SubAgencyID,
                         principalTable: "SubAgency",
                         principalColumn: "SubAgencyID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

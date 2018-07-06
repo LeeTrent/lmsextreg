@@ -112,6 +112,16 @@ namespace lmsextreg.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    ApplicationUser user = await _signInManager.UserManager.FindByNameAsync(Input.Email);
+                    
+                    Console.WriteLine("Login.OnPostAsync] user.DatePasswordExpires: " + user.DatePasswordExpires);
+                    
+                    if ( user.DatePasswordExpires <= DateTime.Now)
+                    {
+                        Console.WriteLine("Password expired - redirecting to './Manage/ChangePassword' page");
+                        return RedirectToPage("./Manage/ChangePassword");
+                    }
                     return LocalRedirect(Url.GetLocalUrl(returnUrl));
                 }
                 if (result.RequiresTwoFactor)

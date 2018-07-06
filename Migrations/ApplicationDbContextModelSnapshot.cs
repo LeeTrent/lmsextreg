@@ -27,12 +27,15 @@ namespace lmsextreg.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("AgencyID");
+                    b.Property<string>("AgencyID")
+                        .IsRequired();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
-                    b.Property<DateTime>("DateExpired");
+                    b.Property<DateTime>("DateAccountExpires");
+
+                    b.Property<DateTime>("DatePasswordExpires");
 
                     b.Property<DateTime>("DateRegistered");
 
@@ -41,11 +44,14 @@ namespace lmsextreg.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .IsRequired();
 
-                    b.Property<string>("JobTitle");
+                    b.Property<string>("JobTitle")
+                        .IsRequired();
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .IsRequired();
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -69,7 +75,8 @@ namespace lmsextreg.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("SubAgencyID");
+                    b.Property<string>("SubAgencyID")
+                        .IsRequired();
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -381,11 +388,13 @@ namespace lmsextreg.Migrations
                 {
                     b.HasOne("lmsextreg.Models.Agency", "Agency")
                         .WithMany()
-                        .HasForeignKey("AgencyID");
+                        .HasForeignKey("AgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("lmsextreg.Models.SubAgency", "SubAgency")
                         .WithMany()
-                        .HasForeignKey("SubAgencyID");
+                        .HasForeignKey("SubAgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("lmsextreg.Models.EnrollmentHistory", b =>
