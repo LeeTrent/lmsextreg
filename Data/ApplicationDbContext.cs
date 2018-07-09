@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using lmsextreg.Models;
+using lmsextreg.Constants;
 
 namespace lmsextreg.Data
 {
@@ -27,7 +28,9 @@ namespace lmsextreg.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
+            builder.HasDefaultSchema(MiscConstants.DB_SCHEMA_NAME);
+          
             /***************************************************************************
              Customize the ASP.NET Identity model and override the defaults if needed.
              For example, you can rename the ASP.NET Identity table names and more.
@@ -41,6 +44,24 @@ namespace lmsextreg.Data
             builder.Entity<ProgramEnrollment>().ToTable("ProgramEnrollment");
             builder.Entity<StatusTransition>().ToTable("StatusTransition");
             builder.Entity<EnrollmentHistory>().ToTable("EnrollmentHistory");
+
+            // builder.Entity<Agency>().ToTable("Agency",                          schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<SubAgency>().ToTable("SubAgency",                    schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<LMSProgram>().ToTable("LMSProgram",                  schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<ProgramApprover>().ToTable("ProgramApprover",        schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<EnrollmentStatus>().ToTable("EnrollmentStatus",      schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<ProgramEnrollment>().ToTable("ProgramEnrollment",    schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<StatusTransition>().ToTable("StatusTransition",      schema: MiscConstants.DB_SCHEMA_NAME );
+            // builder.Entity<EnrollmentHistory>().ToTable("EnrollmentHistory",    schema: MiscConstants.DB_SCHEMA_NAME );
+
+            // builder.Entity<Agency>().ToTable("Agency",                          schema: "lmsext" );
+            // builder.Entity<SubAgency>().ToTable("SubAgency",                    schema: "lmsext" );
+            // builder.Entity<LMSProgram>().ToTable("LMSProgram",                  schema: "lmsext" );
+            // builder.Entity<ProgramApprover>().ToTable("ProgramApprover",        schema: "lmsext" );
+            // builder.Entity<EnrollmentStatus>().ToTable("EnrollmentStatus",      schema: "lmsext" );
+            // builder.Entity<ProgramEnrollment>().ToTable("ProgramEnrollment",    schema: "lmsext" );
+            // builder.Entity<StatusTransition>().ToTable("StatusTransition",      schema: "lmsext" );
+            // builder.Entity<EnrollmentHistory>().ToTable("EnrollmentHistory",    schema: "lmsext" );
 
             /************************************************************************
              There are some configurations that can only be done with the fluent API

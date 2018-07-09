@@ -44,7 +44,20 @@ namespace lmsextreg.Pages.Enrollments
                 .ToListAsync();
            
             var userID = _userManager.GetUserId(User);
-            var sql = "SELECT * FROM public.\"LMSProgram\" WHERE \"LMSProgramID\" NOT IN (SELECT \"LMSProgramID\" FROM public.\"ProgramEnrollment\" WHERE \"StudentUserId\" = {0})";
+
+            //////////////////////////////////////////////////////////////////////////
+            // Select the remaining programs that student has net as yet enrolled in
+            // This is used to manage the user interface to make sure that student
+            // can't enroll in the same program more than once.
+            /////////////////////////////////////////////////////////////////////////
+            var sql = " SELECT * "
+                    + " FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"LMSProgram\" "
+                    + " WHERE \"LMSProgramID\" "
+                    + " NOT IN "
+                    + " ( SELECT \"LMSProgramID\" "
+                    + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" " 
+                    + "   WHERE \"StudentUserId\" = {0} "
+                    + " )";
             var resultSet =  _context.LMSPrograms.FromSql(sql, userID).AsNoTracking();
             ProgramsAreAvailable = (resultSet.Count() > 0);
         }

@@ -59,7 +59,22 @@ namespace lmsextreg.Pages.Enrollments
         public IActionResult OnGet()
         {
             var userID = _userManager.GetUserId(User);
-            var sql = "SELECT * FROM public.\"LMSProgram\" WHERE \"LMSProgramID\" NOT IN (SELECT \"LMSProgramID\" FROM public.\"ProgramEnrollment\" WHERE \"StudentUserId\" = {0})";
+            
+            //////////////////////////////////////////////////////////////////////////
+            // Select the remaining programs that student has net as yet enrolled in
+            // This is used to manage the user interface drope-down to make sure that
+            // student can't enroll in the same program more than once.
+            /////////////////////////////////////////////////////////////////////////
+            var sql = " SELECT * "
+                    + " FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"LMSProgram\" "
+                    + " WHERE \"LMSProgramID\" "
+                    + " NOT IN "
+                    + " ( "
+                    + "   SELECT \"LMSProgramID\" "
+                    + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
+                    + "   WHERE \"StudentUserId\" = {0} "
+                    + " )";
+
             Console.WriteLine("SQL: ");
             Console.WriteLine(sql);
             var resultSet =  _context.LMSPrograms.FromSql(sql, userID).AsNoTracking();
@@ -70,11 +85,6 @@ namespace lmsextreg.Pages.Enrollments
             ProgramSelectList = new SelectList(resultSet, "LMSProgramID", "LongName");
             ShowProgramDropdown = (resultSet.Count() > 0);
 
-
-            //var programSelectQuery = from p in _context.LMSPrograms select p;         
-            //ProgramSelectList = new SelectList(programSelectQuery, "LMSProgramID", "LongName");
-
-            //ProgramSelectList = new SelectList(_context.LMSPrograms, "LMSProgramID", "LongName");
             return Page();
         }
 

@@ -79,13 +79,14 @@ namespace lmsextreg.Pages.Approvals
             // is authorized to edit (approver/deny) enrollment
             // applications for this particular LMS Program.
             ////////////////////////////////////////////////////////////
-            var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
+            var sql = " SELECT * "
+                    + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
                     + "  WHERE  \"ProgramEnrollmentID\" = {0} "
                     + "    AND  \"LMSProgramID\" " 
                     + "     IN "
                     + "      ( "
                     + "        SELECT \"LMSProgramID\" "
-                    + "          FROM public.\"ProgramApprover\" "
+                    + "          FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramApprover\" "
                     + "         WHERE \"ApproverUserId\" = {1} "
                     + "      ) ";
 
@@ -208,13 +209,14 @@ namespace lmsextreg.Pages.Approvals
             // is authorized to edit (approver/deny) enrollment
             // applications for this particular LMS Program.
             ////////////////////////////////////////////////////////////
-            var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
+            var sql = " SELECT * "
+                    + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
                     + "  WHERE  \"ProgramEnrollmentID\" = {0} "
                     + "    AND  \"LMSProgramID\" " 
                     + "     IN "
                     + "      ( "
                     + "        SELECT \"LMSProgramID\" "
-                    + "          FROM public.\"ProgramApprover\" "
+                    + "          FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramApprover\" "
                     + "         WHERE \"ApproverUserId\" = {1} "
                     + "      ) ";
 

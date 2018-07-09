@@ -41,15 +41,24 @@ namespace lmsextreg.Pages.Approvals
             if ( User.IsInRole(RoleConstants.APPROVER))
             {
                 var loggedInUserID = _userManager.GetUserId(User);
- 
-                var sql = " SELECT * FROM public.\"ProgramEnrollment\" "
+
+                ///////////////////////////////////////////////////////////////
+                // Make sure that the logged-in user with the role of approver
+                // is authorized to approve /deny /revoke enrollment
+                // requests for this particular LMS Program.
+                //////////////////////////////////////////////////////////////
+                var sql = " SELECT * "
+                        + " FROM " + MiscConstants.DB_SCHEMA_NAME +  ".\"ProgramEnrollment\" "
                         + " WHERE \"LMSProgramID\" " 
                         + " IN "
                         + " ( "
                         + "   SELECT \"LMSProgramID\" "
-                        + "   FROM public.\"ProgramApprover\" "
+                        + "   FROM " + MiscConstants.DB_SCHEMA_NAME +  ".\"ProgramApprover\" "
 		                + "   WHERE \"ApproverUserId\" = {0} "
 	                    + " ) ";
+
+            Console.WriteLine("SQL: ");
+            Console.WriteLine(sql);                        
 
             ProgramEnrollment  = await _dbContext.ProgramEnrollments
                                 .FromSql(sql, loggedInUserID)
