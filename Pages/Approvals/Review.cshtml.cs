@@ -168,33 +168,12 @@ namespace lmsextreg.Pages.Approvals
             if ( String.IsNullOrEmpty(Input.Remarks))
             {
                 ModelState.AddModelError("ApproverRemarks", "Remarks are required when enrollment request has been denied");
-                var sql = " SELECT * "
-                        + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
-                        + "  WHERE  \"ProgramEnrollmentID\" = {0} "
-                        + "    AND  \"LMSProgramID\" " 
-                        + "     IN "
-                        + "      ( "
-                        + "        SELECT \"LMSProgramID\" "
-                        + "          FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramApprover\" "
-                        + "         WHERE \"ApproverUserId\" = {1} "
-                        + "      ) ";
 
-                ProgramEnrollment = null;
-                ProgramEnrollment = await _dbContext.ProgramEnrollments
-                                    .FromSql(sql, id, _userManager.GetUserId(User))
-                                    .Include(pe => pe.LMSProgram)
-                                    .Include(pe => pe.Student)
-                                        .ThenInclude(s => s.SubAgency)
-                                        .ThenInclude(sa => sa.Agency)
-                                    .Include(pe => pe.EnrollmentStatus)
-                                    .SingleOrDefaultAsync();
-
-                EnrollmentHistory = await _dbContext.EnrollmentHistories
-                                        .Where(eh => eh.ProgramEnrollmentID == ProgramEnrollment.ProgramEnrollmentID)
-                                        .Include(eh => eh.Actor)
-                                        .Include(eh => eh.StatusTransition)
-                                        .OrderBy(eh => eh.EnrollmentHistoryID)
-                                        .ToListAsync();   
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                // Rebuild page 
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                ProgramEnrollment = await this.retrieveProgramEnrollment(this.createAuthorizationSQL(), id);
+                EnrollmentHistory = await this.retrieveEnrollmentHistory(ProgramEnrollment.ProgramEnrollmentID); 
                 ShowReviewForm      = true;
                 ShowApproveButton   = true;
                 ShowDenyButton      = true;
@@ -350,7 +329,8 @@ namespace lmsextreg.Pages.Approvals
             return RedirectToPage("./Index");          
         }
 
-        private string createApproverSQL() {
+        private string createAuthorizationSQL() 
+        {
             return    " SELECT * "
                     + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
                     + "  WHERE  \"ProgramEnrollmentID\" = {0} "
@@ -363,5 +343,26 @@ namespace lmsextreg.Pages.Approvals
                     + "      ) ";
             
         }
+        private async Task<ProgramEnrollment> retrieveProgramEnrollment(string sql, int programEnrollmentID)   
+        {
+            return await _dbContext.ProgramEnrollments
+                            .FromSql(sql, programEnrollmentID, _userManager.GetUserId(User))
+                            .Include(pe => pe.LMSProgram)
+                            .Include(pe => pe.Student)
+                                .ThenInclude(s => s.SubAgency)
+                                .ThenInclude(sa => sa.Agency)
+                            .Include(pe => pe.EnrollmentStatus)
+                            .SingleOrDefaultAsync();
+        }     
+
+       private async Task<List<EnrollmentHistory>> retrieveEnrollmentHistory(int programEnrollmentID)   
+        {
+            return await _dbContext.EnrollmentHistories
+                                    .Where(eh => eh.ProgramEnrollmentID == programEnrollmentID)
+                                    .Include(eh => eh.Actor)
+                                    .Include(eh => eh.StatusTransition)
+                                    .OrderBy(eh => eh.EnrollmentHistoryID)
+                                    .ToListAsync();
+        }                  
     }
 }
