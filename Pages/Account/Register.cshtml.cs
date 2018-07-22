@@ -221,7 +221,7 @@ namespace lmsextreg.Pages.Account
 
        public JsonResult OnGetSubAgenciesInAgency(string agyID) 
         {
-            List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agyID ).ToList();
+            List<SubAgency> subAgencyList = _dbContext.SubAgencies.Where( sa => sa.AgencyID == agyID ).OrderBy(sa => sa.DisplayOrder).ToList();
             return new JsonResult(new SelectList(subAgencyList, "SubAgencyID", "SubAgencyName"));
         } 
 
