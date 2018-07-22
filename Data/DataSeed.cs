@@ -114,13 +114,28 @@ namespace lmsextreg.Data
 
             await EnsureStatusTransition
             (
+                dbContext, StatusCodeConstants.APPROVED,  StatusCodeConstants.WITHDRAWN,  TransitionCodeConstants.APPROVED_TO_WITHDRAWN,  TransitionLabelConstants.APPROVED_TO_WITHDRAWN
+            );
+
+            await EnsureStatusTransition
+            (
                 dbContext, StatusCodeConstants.APPROVED,  StatusCodeConstants.REVOKED,  TransitionCodeConstants.APPROVED_TO_REVOKED,  TransitionLabelConstants.APPROVED_TO_REVOKED
             );
 
             await EnsureStatusTransition
             (
-                dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
+                dbContext, StatusCodeConstants.WITHDRAWN,  StatusCodeConstants.PENDING,  TransitionCodeConstants.WITHDRAWN_TO_PENDING,  TransitionLabelConstants.WITHDRAWN_TO_PENDING
             );            
+
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
+            );        
+
+           await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.REVOKED,  StatusCodeConstants.PENDING,  TransitionCodeConstants.REVOKED_TO_PENDING,  TransitionLabelConstants.REVOKED_TO_PENDING
+            );                     
 
             Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
         }

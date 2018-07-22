@@ -26,6 +26,7 @@ namespace lmsextreg.Pages.Enrollments
         }
 
         public string PENDING   = StatusCodeConstants.PENDING;
+        public string APPROVED  = StatusCodeConstants.APPROVED;
         public string WITHDRAWN = StatusCodeConstants.WITHDRAWN;
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
 

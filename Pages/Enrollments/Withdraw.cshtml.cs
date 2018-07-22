@@ -139,10 +139,27 @@ namespace lmsextreg.Pages.Enrollments
 
             ////////////////////////////////////////////////////////////
             // Retrieve the correct StatusTransition
-            ////////////////////////////////////////////////////////////            
-            var lvStatusTranstion = await _context.StatusTransitions
+            ////////////////////////////////////////////////////////////   
+            StatusTransition lvStatusTranstion  = null;
+
+            //////////////////////////////////////////////////////////////////////            
+            // STATUS TRANSITION: PENDING TO WITHDRAEN
+            //////////////////////////////////////////////////////////////////////
+            if (lvProgramEnrollment.StatusCode.Equals(StatusCodeConstants.PENDING))
+            {
+                lvStatusTranstion = await _context.StatusTransitions
                                     .Where(st => st.TransitionCode == TransitionCodeConstants.PENDING_TO_WITHDRAWN)
                                     .SingleOrDefaultAsync();
+            }
+            //////////////////////////////////////////////////////////////////////            
+            // STATUS TRANSITION: APPROVED TO WITHDRAEN
+            //////////////////////////////////////////////////////////////////////
+            if (lvProgramEnrollment.StatusCode.Equals(StatusCodeConstants.APPROVED))
+            {
+                lvStatusTranstion = await _context.StatusTransitions
+                                    .Where(st => st.TransitionCode == TransitionCodeConstants.APPROVED_TO_WITHDRAWN)
+                                    .SingleOrDefaultAsync();
+            }
 
             ////////////////////////////////////////////////////////////////
             // Create EnrollmentHistory using the correct StatusTranistion

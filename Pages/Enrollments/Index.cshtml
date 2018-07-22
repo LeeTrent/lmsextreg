@@ -54,16 +54,12 @@
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                @if ( item.StatusCode == @Model.PENDING)
+                <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
+                @if ( item.StatusCode == @Model.PENDING || item.StatusCode == @Model.APPROVED)
                 {
-                    <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
                     <span> | </span>
                     <a asp-page="./Withdraw"  asp-route-id="@item.ProgramEnrollmentID">Withdraw</a>
                 }
-               @if ( item.StatusCode != @Model.PENDING)
-                {
-                    <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
-                }                
             </td>
         </tr>
 }
