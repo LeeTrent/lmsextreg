@@ -69,8 +69,9 @@
         <input type="hidden" name="id" value="@Model.ProgramEnrollment.ProgramEnrollmentID" />
        <div class="input-group mb3">
              <div class="form-group">
-                <label    asp-for="Input.Remarks"></label>:
-                <textarea asp-for="Input.Remarks" class="form-control" rows="3" cols="40"></textarea>
+                <label asp-for="Input.Remarks"></label>:
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <textarea asp-for="Input.Remarks" id="ApproverRemarks" class="form-control" style="margin-top:0px;" rows="3" cols="40"></textarea>
             </div>
             <div class="form-group">
                 @if ( @Model.ShowApproveButton )

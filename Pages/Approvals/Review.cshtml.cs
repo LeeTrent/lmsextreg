@@ -162,6 +162,46 @@ namespace lmsextreg.Pages.Approvals
 
         public async Task<IActionResult> OnPostDenyAsync(int id)
         {
+            ///////////////////////////////////////////////////////////////
+            // Remarks are required when Enrollment Request is DENIED
+            ///////////////////////////////////////////////////////////////
+            if ( String.IsNullOrEmpty(Input.Remarks))
+            {
+                ModelState.AddModelError("ApproverRemarks", "Remarks are required when enrollment request has been denied");
+                var sql = " SELECT * "
+                        + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
+                        + "  WHERE  \"ProgramEnrollmentID\" = {0} "
+                        + "    AND  \"LMSProgramID\" " 
+                        + "     IN "
+                        + "      ( "
+                        + "        SELECT \"LMSProgramID\" "
+                        + "          FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramApprover\" "
+                        + "         WHERE \"ApproverUserId\" = {1} "
+                        + "      ) ";
+
+                ProgramEnrollment = null;
+                ProgramEnrollment = await _dbContext.ProgramEnrollments
+                                    .FromSql(sql, id, _userManager.GetUserId(User))
+                                    .Include(pe => pe.LMSProgram)
+                                    .Include(pe => pe.Student)
+                                        .ThenInclude(s => s.SubAgency)
+                                        .ThenInclude(sa => sa.Agency)
+                                    .Include(pe => pe.EnrollmentStatus)
+                                    .SingleOrDefaultAsync();
+
+                EnrollmentHistory = await _dbContext.EnrollmentHistories
+                                        .Where(eh => eh.ProgramEnrollmentID == ProgramEnrollment.ProgramEnrollmentID)
+                                        .Include(eh => eh.Actor)
+                                        .Include(eh => eh.StatusTransition)
+                                        .OrderBy(eh => eh.EnrollmentHistoryID)
+                                        .ToListAsync();   
+                ShowReviewForm      = true;
+                ShowApproveButton   = true;
+                ShowDenyButton      = true;
+                ShowRevokeButton    = false;
+                return Page();
+            }
+
             return await this.OnPostAsync
             (
                 id, 
@@ -308,6 +348,20 @@ namespace lmsextreg.Pages.Approvals
             // Redirect to Approval Index Page
             /////////////////////////////////////////////////////////////////
             return RedirectToPage("./Index");          
+        }
+
+        private string createApproverSQL() {
+            return    " SELECT * "
+                    + "   FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramEnrollment\" "
+                    + "  WHERE  \"ProgramEnrollmentID\" = {0} "
+                    + "    AND  \"LMSProgramID\" " 
+                    + "     IN "
+                    + "      ( "
+                    + "        SELECT \"LMSProgramID\" "
+                    + "          FROM " + MiscConstants.DB_SCHEMA_NAME + ".\"ProgramApprover\" "
+                    + "         WHERE \"ApproverUserId\" = {1} "
+                    + "      ) ";
+            
         }
     }
 }
