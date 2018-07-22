@@ -194,6 +194,9 @@ namespace lmsextreg.Data
             await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC");
             await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC");                        
 
+            // Stacy LoSchiavo (approver for Program C)
+            await EnsureApprover(svcProvider, "stacy.loschiavo@gsa.gov",    tempPW, "Stacy", "LoSchiavo", "GS", "GS30", "PC");                        
+
             await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD");                        
             await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD");                                                
             await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD");                        
