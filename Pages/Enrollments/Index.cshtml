@@ -55,6 +55,11 @@
             </td>
             <td>
                 <a asp-page="./Details"  asp-route-id="@item.ProgramEnrollmentID">View Details</a>
+                @if ( item.StatusCode == @Model.WITHDRAWN || item.StatusCode == @Model.REVOKED)
+                {
+                    <span> | </span>
+                    <a asp-page="./Reenroll"  asp-route-id="@item.ProgramEnrollmentID">Re-enroll</a>
+                }                
                 @if ( item.StatusCode == @Model.PENDING || item.StatusCode == @Model.APPROVED)
                 {
                     <span> | </span>
