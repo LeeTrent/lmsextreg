@@ -323,17 +323,9 @@ namespace lmsextreg.Pages.Approvals
                             + ".";
             if  ( StatusCodeConstants.DENIED.Equals(lvProgramEnrollment.EnrollmentStatus.StatusCode))          
             {
-                // https://webactivedirectory.com/asp-net/asp-net-use-url-content-from-razor-to-resolve-relative-urls/
-                //var webRoot = _env.WebRootPath;
                 string referrer = Request.Headers["Referer"];
-                // Console.WriteLine("referrer: " );
-                // Console.WriteLine(referrer);                    
-                // Console.WriteLine("referrer.Length: " );
-                // Console.WriteLine(referrer.Length);    
-
-                int end = referrer.IndexOf("Approvals");
-                // Console.WriteLine("end: " );
-                // Console.WriteLine(end); 
+                // TODO: Switch to a more professional way of doing this!
+                int end = referrer.IndexOf("Approvals"); // TEMPORARY!!
                 
                 string baseUrl = referrer.Substring(0, end);
                 Console.WriteLine("baseUrl: " );
