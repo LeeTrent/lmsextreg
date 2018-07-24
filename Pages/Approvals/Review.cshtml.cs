@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-
 using lmsextreg.Constants;
 using lmsextreg.Data;
 using lmsextreg.Models;
@@ -320,7 +319,32 @@ namespace lmsextreg.Pages.Approvals
             string message  = "Your request to enroll in the " 
                             + lvProgramEnrollment.LMSProgram.LongName 
                             + " has been " 
-                            + lvProgramEnrollment.EnrollmentStatus.StatusLabel;
+                            + lvProgramEnrollment.EnrollmentStatus.StatusLabel
+                            + ".";
+            if  ( StatusCodeConstants.DENIED.Equals(lvProgramEnrollment.EnrollmentStatus.StatusCode))          
+            {
+                // https://webactivedirectory.com/asp-net/asp-net-use-url-content-from-razor-to-resolve-relative-urls/
+                //var webRoot = _env.WebRootPath;
+                string referrer = Request.Headers["Referer"];
+                // Console.WriteLine("referrer: " );
+                // Console.WriteLine(referrer);                    
+                // Console.WriteLine("referrer.Length: " );
+                // Console.WriteLine(referrer.Length);    
+
+                int end = referrer.IndexOf("Approvals");
+                // Console.WriteLine("end: " );
+                // Console.WriteLine(end); 
+                
+                string baseUrl = referrer.Substring(0, end);
+                Console.WriteLine("baseUrl: " );
+                Console.WriteLine(baseUrl);       
+           
+                var studentLoginPath = baseUrl + "Account/Login";
+                Console.WriteLine("studentLoginPath: " );
+                Console.WriteLine(studentLoginPath);
+                message += " <a href='" + studentLoginPath + "'>Log-in</a> "
+                        + "to the training registration system for more information regarding the denial.";
+            }      
             await _emailSender.SendEmailAsync(email, subject, message);
 
             /////////////////////////////////////////////////////////////////
