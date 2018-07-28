@@ -14,6 +14,7 @@ namespace lmsextreg.Models
         [Required]
         [Display(Name = "Program Name")]
         public string LongName { get; set; }
+        public string CommonInbox { get; set; }
         public ICollection<ProgramApprover> ProgramApprovers { get; set; }
     }
 }

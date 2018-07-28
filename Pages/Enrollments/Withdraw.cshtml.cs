@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using lmsextreg.Data;
 using lmsextreg.Models;
 using lmsextreg.Constants;
+using lmsextreg.Services;
 
 namespace lmsextreg.Pages.Enrollments
 {
@@ -19,12 +20,15 @@ namespace lmsextreg.Pages.Enrollments
     {
         private readonly lmsextreg.Data.ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
         public WithdrawModel(lmsextreg.Data.ApplicationDbContext context, 
-                            UserManager<ApplicationUser> userMgr)
+                            UserManager<ApplicationUser> userMgr,
+                            IEmailSender emailSender)
         {
             _context = context;
             _userManager = userMgr;
+            _emailSender = emailSender;
         }
 
         public class InputModel
@@ -198,10 +202,44 @@ namespace lmsextreg.Pages.Enrollments
             _context.ProgramEnrollments.Update(lvProgramEnrollment);
             await _context.SaveChangesAsync();
 
+            ////////////////////////////////////////////////////////////////////////////////////
+            // Send email notification to approvers who have their EmailNotify flag set to true
+            ////////////////////////////////////////////////////////////////////////////////////
+            IList<ProgramApprover> approverList = await _context.ProgramApprovers
+                                                .Where ( pa => pa.LMSProgramID == lvProgramEnrollment.LMSProgramID && pa.EmailNotify == true)
+                                                .Include ( pa => pa.Approver)
+                                                .Include ( pa => pa.LMSProgram )
+                                                .AsNoTracking()
+                                                .ToListAsync(); 
+
+            ApplicationUser student = await GetCurrentUserAsync();
+            foreach (ProgramApprover approverObj in approverList)
+            {
+                string email    = approverObj.Approver.Email;
+                string subject  = "Program Enrollment Withdrawal (" + approverObj.LMSProgram.LongName + ")"; 
+                string message  = student.FullName + " has withdrawn his/her enrollment in " + approverObj.LMSProgram.LongName;
+                await _emailSender.SendEmailAsync(email, subject, message);
+            }
+            ////////////////////////////////////////////////////////////////////////////////////
+            // Send email notification to LMS Program's common inbox (if any)
+            ////////////////////////////////////////////////////////////////////////////////////
+            LMSProgram lmsProgram = await _context.LMSPrograms
+                                    .Where(p => p.LMSProgramID == lvProgramEnrollment.LMSProgramID && p.CommonInbox != null)
+                                    .AsNoTracking()
+                                    .SingleOrDefaultAsync();
+            if ( String.IsNullOrEmpty(lmsProgram.CommonInbox) == false )
+            {
+                string email = lmsProgram.CommonInbox;
+                string subject  = "Program Enrollment Withdrawal (" + lmsProgram.LongName + ")";
+                string message  = student.FullName + " has withdrawn his/her enrollment in " + lmsProgram.LongName;
+                await _emailSender.SendEmailAsync(email, subject, message);
+            }              
+
             /////////////////////////////////////////////////////////////////
             // Redirect to Student Index Page
             /////////////////////////////////////////////////////////////////
             return RedirectToPage("./Index");
         }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

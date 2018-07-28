@@ -166,6 +166,8 @@ namespace lmsextreg.Migrations
                     b.Property<int>("LMSProgramID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CommonInbox");
+
                     b.Property<string>("LongName")
                         .IsRequired();
 
@@ -182,6 +184,8 @@ namespace lmsextreg.Migrations
                     b.Property<int>("LMSProgramID");
 
                     b.Property<string>("ApproverUserId");
+
+                    b.Property<bool>("EmailNotify");
 
                     b.HasKey("LMSProgramID", "ApproverUserId");
 

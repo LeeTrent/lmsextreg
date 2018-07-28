@@ -166,16 +166,17 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsurePrograms: BEGIN");
 
-            await EnsureProgram(dbContext, "PA", "Program A");
-            await EnsureProgram(dbContext, "PB", "Program B");
-            await EnsureProgram(dbContext, "PC", "Program C");
-            await EnsureProgram(dbContext, "PD", "Program D");
-            await EnsureProgram(dbContext, "PE", "Program E");
-            await EnsureProgram(dbContext, "PF", "Program F");
+            await EnsureProgram(dbContext, "FLEET", "Fleet Management", "fleet_training@gsa.gov");
+            await EnsureProgram(dbContext, "PA", "Program A", null);
+            await EnsureProgram(dbContext, "PB", "Program B", null);
+            await EnsureProgram(dbContext, "PC", "Program C", null);
+            await EnsureProgram(dbContext, "PD", "Program D", null);
+            await EnsureProgram(dbContext, "PE", "Program E", null);
+            await EnsureProgram(dbContext, "PF", "Program F", "lee.trent@icloud.com");
 
             Console.WriteLine("DataSeed.EnsurePrograms: END");
         }
-        private static async Task EnsureProgram(ApplicationDbContext dbContext, string shortName, string longName)
+        private static async Task EnsureProgram(ApplicationDbContext dbContext, string shortName, string longName, string commonInbox)
         {
             Console.WriteLine("DataSeed.EnsureProgram: BEGIN");
 
@@ -185,7 +186,8 @@ namespace lmsextreg.Data
                 program = new LMSProgram
                 {
                     ShortName = shortName,
-                    LongName = longName
+                    LongName = longName,
+                    CommonInbox = commonInbox
                 };
 
                 dbContext.LMSPrograms.Add(program);
@@ -199,39 +201,57 @@ namespace lmsextreg.Data
         private static async Task EnsureApprovers(IServiceProvider svcProvider, string tempPW)
         {
             Console.WriteLine("DataSeed.EnsureApprovers: BEGIN");
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Stacy LoSchiavo & Sarah Whtimore, approvers for 'FLEET', do not receive email notifications directly.
+            // They use a common inbox instead.
+            /////////////////////////////////////////////////////////////////////////////////////////
+            bool emailNotify = false;
+            await EnsureApprover(svcProvider, "stacy.loschiavo@gsa.gov", tempPW, "Stacy", "LoSchiavo", "GS", "GS30", "FLEET", emailNotify);                        
+            await EnsureApprover(svcProvider, "sarah.whitmore@gsa.gov",  tempPW, "Sarah", "Whitmore",  "GS", "GS30", "FLEET", emailNotify);                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "Approver", "PA1", "GS", "GS30", "PA" );
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // This is to test Common Inbox functionality
+            // Common Inbox for Program F is lee.trent@icloud.com
+            // Approver for Program F, lee.trent@gsa.gov, will not receive email notifications directly. 
+            // These notifications will go to the Common Inbox instead.
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////            
+            emailNotify = false;
+            await EnsureApprover(svcProvider, "lee.trent@gsa.gov",          tempPW, "Lee", "Trent - PF1", "GS", "GS03", "PF", emailNotify);    
 
-            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "Approver", "PB1", "GS", "GS30", "PB");
-            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "Approver", "PB2", "GS", "GS30", "PB");
+            /////////////////////////////////////////////////////////////////////////////////////////
+            // Default setting for program approvers is:
+            // emailNotify = true; 
+            /////////////////////////////////////////////////////////////////////////////////////////
+            emailNotify = true; 
+            
+            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "Approver", "PA1", "GS", "GS30", "PA", emailNotify);
 
-            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "Approver", "PC1", "GS", "GS30", "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC");
-            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "Approver", "PB1", "GS", "GS30", "PB", emailNotify);
+            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "Approver", "PB2", "GS", "GS30", "PB", emailNotify);
 
-            // Stacy LoSchiavo (approver for Program C)
-            await EnsureApprover(svcProvider, "stacy.loschiavo@gsa.gov",    tempPW, "Stacy", "LoSchiavo", "GS", "GS30", "PC");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "Approver", "PC1", "GS", "GS30", "PC", emailNotify);
+            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC", emailNotify);
+            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC", emailNotify);                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD");                                                
-            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "Approver", "PD4", "GS", "GS03", "PD");                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD", emailNotify);                                                
+            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "Approver", "PD4", "GS", "GS03", "PD", emailNotify);                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "Approver", "PE1", "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "Approver", "PE2", "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "Approver", "PE3", "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "Approver", "PE4", "GS", "GS03", "PE");                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "Approver", "PE5", "GS", "GS03", "PE");    
-
-            await EnsureApprover(svcProvider, "lee.trent@gsa.gov",          tempPW, "Lee", "Trent - PF1", "GS", "GS03", "PF");    
-            await EnsureApprover(svcProvider, "lee.trent@icloud.com",       tempPW, "Lee", "Trent - PF2", "GS", "GS03", "PF");    
+            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "Approver", "PE1", "GS", "GS03", "PE", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "Approver", "PE2", "GS", "GS03", "PE", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "Approver", "PE3", "GS", "GS03", "PE", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "Approver", "PE4", "GS", "GS03", "PE", emailNotify);                        
+            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "Approver", "PE5", "GS", "GS03", "PE", emailNotify);    
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }
   
         private static async Task EnsureApprover(IServiceProvider svcProvider, string userName, string tempPW, 
                                                     string firstName, string lastName,
-                                                    string agencyID, string subagencyID, string programShortName)
+                                                    string agencyID, string subagencyID, string programShortName,
+                                                    bool emailNotify)
         {
              Console.WriteLine("DataSeed.EnsureApprover: BEGIN");
 
@@ -255,7 +275,7 @@ namespace lmsextreg.Data
                     DateRegistered = DateTime.Now,
                     DateAccountExpires = DateTime.Now.AddDays(AccountConstants.DAYS_ACCOUNT_EXPIRES),
                     DatePasswordExpires = DateTime.Now,
-                    RulesOfBehaviorAgreedTo = true                             
+                    RulesOfBehaviorAgreedTo = true, 
                 };
                 
                 await userMgr.CreateAsync(user, tempPW);
@@ -273,7 +293,8 @@ namespace lmsextreg.Data
                 var programApprover = new ProgramApprover
                 {
                     LMSProgramID = program.LMSProgramID,
-                    ApproverUserId = user.Id
+                    ApproverUserId = user.Id,
+                    EmailNotify = emailNotify
                 };
 
                 dbContext.ProgramApprovers.Add(programApprover);

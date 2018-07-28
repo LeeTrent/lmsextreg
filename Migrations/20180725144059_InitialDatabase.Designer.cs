@@ -11,7 +11,7 @@ using System;
 namespace lmsextreg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180709153248_InitialDatabase")]
+    [Migration("20180725144059_InitialDatabase")]
     partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,6 +167,8 @@ namespace lmsextreg.Migrations
                     b.Property<int>("LMSProgramID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CommonInbox");
+
                     b.Property<string>("LongName")
                         .IsRequired();
 
@@ -183,6 +185,8 @@ namespace lmsextreg.Migrations
                     b.Property<int>("LMSProgramID");
 
                     b.Property<string>("ApproverUserId");
+
+                    b.Property<bool>("EmailNotify");
 
                     b.HasKey("LMSProgramID", "ApproverUserId");
 

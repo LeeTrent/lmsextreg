@@ -138,13 +138,14 @@ namespace lmsextreg.Pages.Enrollments
             _context.ProgramEnrollments.Add(programEnrollment);
             await _context.SaveChangesAsync();
 
-            /////////////////////////////////////////////////////////////////////
-            // Send email notification to approvers
-            /////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////
+            // Send email notification to approvers who have their EmailNotify flag set to true
+            ////////////////////////////////////////////////////////////////////////////////////
             IList<ProgramApprover> approverList = await _context.ProgramApprovers
-                                                .Where ( pa => pa.LMSProgramID == programEnrollment.LMSProgramID )
+                                                .Where ( pa => pa.LMSProgramID == programEnrollment.LMSProgramID && pa.EmailNotify == true)
                                                 .Include ( pa => pa.Approver)
                                                 .Include ( pa => pa.LMSProgram )
+                                                .AsNoTracking()
                                                 .ToListAsync(); 
 
             ApplicationUser student = await GetCurrentUserAsync();
@@ -155,6 +156,21 @@ namespace lmsextreg.Pages.Enrollments
                 string message  = student.FullName + " has requested to enroll in " + approverObj.LMSProgram.LongName;
                 await _emailSender.SendEmailAsync(email, subject, message);
             }
+            ////////////////////////////////////////////////////////////////////////////////////
+            // Send email notification to LMS Program's common inbox (if any)
+            ////////////////////////////////////////////////////////////////////////////////////
+            LMSProgram lmsProgram = await _context.LMSPrograms
+                                    .Where(p => p.LMSProgramID == programEnrollment.LMSProgramID && p.CommonInbox != null)
+                                    .AsNoTracking()
+                                    .SingleOrDefaultAsync();
+            if ( lmsProgram != null 
+                    && String.IsNullOrEmpty(lmsProgram.CommonInbox) == false )
+            {
+                string email = lmsProgram.CommonInbox;
+                string subject  = "Program Enrollment Request (" + lmsProgram.LongName + ")";
+                string message  = student.FullName + " has requested to enroll in " + lmsProgram.LongName;
+                await _emailSender.SendEmailAsync(email, subject, message);
+            }                           
 
             /////////////////////////////////////////////////////////////////
             // Redirect to Enrollmentl Index Page

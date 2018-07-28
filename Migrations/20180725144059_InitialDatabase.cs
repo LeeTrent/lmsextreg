@@ -63,6 +63,7 @@ namespace lmsextreg.Migrations
                 {
                     LMSProgramID = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CommonInbox = table.Column<string>(nullable: true),
                     LongName = table.Column<string>(nullable: false),
                     ShortName = table.Column<string>(nullable: false)
                 },
@@ -299,7 +300,8 @@ namespace lmsextreg.Migrations
                 columns: table => new
                 {
                     LMSProgramID = table.Column<int>(nullable: false),
-                    ApproverUserId = table.Column<string>(nullable: false)
+                    ApproverUserId = table.Column<string>(nullable: false),
+                    EmailNotify = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

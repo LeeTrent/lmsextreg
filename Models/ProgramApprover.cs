@@ -15,6 +15,9 @@ namespace lmsextreg.Models
         [Required]
         public string ApproverUserId { get; set; }
 
+        [Required]
+        public bool EmailNotify { get; set; } = true;
+
         ///////////////////////////////////////////////////////////
         // Navigation Properties
         ///////////////////////////////////////////////////////////        
