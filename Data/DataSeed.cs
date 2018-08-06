@@ -132,9 +132,13 @@ namespace lmsextreg.Data
                 dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.APPROVED,  TransitionCodeConstants.DENIED_TO_APPROVED,  TransitionLabelConstants.DENIED_TO_APPROVED
             );        
 
-           await EnsureStatusTransition
+            await EnsureStatusTransition
             (
                 dbContext, StatusCodeConstants.REVOKED,  StatusCodeConstants.PENDING,  TransitionCodeConstants.REVOKED_TO_PENDING,  TransitionLabelConstants.REVOKED_TO_PENDING
+            );                     
+            await EnsureStatusTransition
+            (
+                dbContext, StatusCodeConstants.DENIED,  StatusCodeConstants.PENDING,  TransitionCodeConstants.DENIED_TO_PENDING,  TransitionLabelConstants.DENIED_TO_PENDING
             );                     
 
             Console.WriteLine("DataSeed.EnsureStatusTransitions: END");
@@ -225,25 +229,25 @@ namespace lmsextreg.Data
             /////////////////////////////////////////////////////////////////////////////////////////
             emailNotify = true; 
             
-            await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "Approver", "PA1", "GS", "GS30", "PA", emailNotify);
+            // await EnsureApprover(svcProvider, "ProgramApproverPA1@gsa.gov", tempPW, "Approver", "PA1", "GS", "GS30", "PA", emailNotify);
 
-            await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "Approver", "PB1", "GS", "GS30", "PB", emailNotify);
-            await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "Approver", "PB2", "GS", "GS30", "PB", emailNotify);
+            // await EnsureApprover(svcProvider, "ProgramApproverPB1@gsa.gov", tempPW, "Approver", "PB1", "GS", "GS30", "PB", emailNotify);
+            // await EnsureApprover(svcProvider, "ProgramApproverPB2@gsa.gov", tempPW, "Approver", "PB2", "GS", "GS30", "PB", emailNotify);
 
-            await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "Approver", "PC1", "GS", "GS30", "PC", emailNotify);
-            await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC", emailNotify);
-            await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPC1@gsa.gov", tempPW, "Approver", "PC1", "GS", "GS30", "PC", emailNotify);
+            // await EnsureApprover(svcProvider, "ProgramApproverPC2@gsa.gov", tempPW, "Approver", "PC2", "GS", "GS30", "PC", emailNotify);
+            // await EnsureApprover(svcProvider, "ProgramApproverPC3@gsa.gov", tempPW, "Approver", "PC3", "GS", "GS30", "PC", emailNotify);                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD", emailNotify);                                                
-            await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "Approver", "PD4", "GS", "GS03", "PD", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPD1@gsa.gov", tempPW, "Approver", "PD1", "GS", "GS03", "PD", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPD2@gsa.gov", tempPW, "Approver", "PD2", "GS", "GS03", "PD", emailNotify);                                                
+            // await EnsureApprover(svcProvider, "ProgramApproverPD3@gsa.gov", tempPW, "Approver", "PD3", "GS", "GS03", "PD", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPD4@gsa.gov", tempPW, "Approver", "PD4", "GS", "GS03", "PD", emailNotify);                        
 
-            await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "Approver", "PE1", "GS", "GS03", "PE", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "Approver", "PE2", "GS", "GS03", "PE", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "Approver", "PE3", "GS", "GS03", "PE", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "Approver", "PE4", "GS", "GS03", "PE", emailNotify);                        
-            await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "Approver", "PE5", "GS", "GS03", "PE", emailNotify);    
+            // await EnsureApprover(svcProvider, "ProgramApproverPE1@gsa.gov", tempPW, "Approver", "PE1", "GS", "GS03", "PE", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPE2@gsa.gov", tempPW, "Approver", "PE2", "GS", "GS03", "PE", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPE3@gsa.gov", tempPW, "Approver", "PE3", "GS", "GS03", "PE", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPE4@gsa.gov", tempPW, "Approver", "PE4", "GS", "GS03", "PE", emailNotify);                        
+            // await EnsureApprover(svcProvider, "ProgramApproverPE5@gsa.gov", tempPW, "Approver", "PE5", "GS", "GS03", "PE", emailNotify);    
 
             Console.WriteLine("DataSeed.EnsureApprovers: END");
         }
@@ -307,16 +311,16 @@ namespace lmsextreg.Data
         {
             Console.WriteLine("DataSeed.EnsureStudents: BEGIN");
 
-            await EnsureStudent(svcProvider, "student01@state.gov", tempPW, "Student", "#1", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student02@state.gov", tempPW, "Student", "#2", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student03@state.gov", tempPW, "Student", "#3", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student04@state.gov", tempPW, "Student", "#4", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student05@state.gov", tempPW, "Student", "#5", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student06@state.gov", tempPW, "Student", "#6", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student07@state.gov", tempPW, "Student", "#7", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student08@state.gov", tempPW, "Student", "#8", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "Student", "#9", "ST", "ST00");
-            await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "Student", "#10", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student01@state.gov", tempPW, "Student", "#1", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student02@state.gov", tempPW, "Student", "#2", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student03@state.gov", tempPW, "Student", "#3", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student04@state.gov", tempPW, "Student", "#4", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student05@state.gov", tempPW, "Student", "#5", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student06@state.gov", tempPW, "Student", "#6", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student07@state.gov", tempPW, "Student", "#7", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student08@state.gov", tempPW, "Student", "#8", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student09@state.gov", tempPW, "Student", "#9", "ST", "ST00");
+            // await EnsureStudent(svcProvider, "student10@state.gov", tempPW, "Student", "#10", "ST", "ST00");
 
             await EnsureStudent(svcProvider, "lee.trent.1@gmail.com", tempPW, "Lee", "Trent", "DJ", "DJ02");
 

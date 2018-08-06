@@ -28,7 +28,8 @@ namespace lmsextreg.Pages.Enrollments
         public string PENDING   = StatusCodeConstants.PENDING;
         public string APPROVED  = StatusCodeConstants.APPROVED;
         public string WITHDRAWN = StatusCodeConstants.WITHDRAWN;
-        public string REVOKED = StatusCodeConstants.REVOKED;
+        public string REVOKED   = StatusCodeConstants.REVOKED;
+        public string DENIED    = StatusCodeConstants.DENIED;
         public IList<ProgramEnrollment> ProgramEnrollment { get;set; }
 
         public ApplicationUser LoggedInUser {get;set;}

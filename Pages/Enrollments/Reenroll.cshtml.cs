@@ -164,6 +164,15 @@ namespace lmsextreg.Pages.Enrollments
                                     .Where(st => st.TransitionCode == TransitionCodeConstants.REVOKED_TO_PENDING)
                                     .SingleOrDefaultAsync();
             }
+            //////////////////////////////////////////////////////////////////////            
+            // STATUS TRANSITION: DENIED TO PENDING
+            //////////////////////////////////////////////////////////////////////
+            if (lvProgramEnrollment.StatusCode.Equals(StatusCodeConstants.DENIED))
+            {
+                lvStatusTranstion = await _context.StatusTransitions
+                                    .Where(st => st.TransitionCode == TransitionCodeConstants.DENIED_TO_PENDING)
+                                    .SingleOrDefaultAsync();
+            }            
 
             ////////////////////////////////////////////////////////////////
             // Create EnrollmentHistory using the correct StatusTranistion
