@@ -16,12 +16,12 @@ namespace lmsextreg.Data
 
             var dbContext = svcProvider.GetRequiredService<ApplicationDbContext>();
 
-            await EnsureRoles(svcProvider);
-            await EnsureEnrollmentStatuses(dbContext);
-            await EnsureStatusTransitions(dbContext);
-            await EnsurePrograms(dbContext);
-            await EnsureApprovers(svcProvider, tempPW); 
-            await EnsureStudents(svcProvider, tempPW); 
+            //await EnsureRoles(svcProvider);
+            //await EnsureEnrollmentStatuses(dbContext);
+            //await EnsureStatusTransitions(dbContext);
+            //await EnsurePrograms(dbContext);
+            //await EnsureApprovers(svcProvider, tempPW); 
+            //await EnsureStudents(svcProvider, tempPW); 
             
             Console.WriteLine("DataSeed.Initialize: END");
         }
