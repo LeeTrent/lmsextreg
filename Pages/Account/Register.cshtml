@@ -86,7 +86,7 @@
                 <br/>
                 <span asp-validation-for="Input.RulesOfBehaviorAgreedTo" class="text-danger"></span>
             </div>    
-            <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="@ViewData['ReCaptchaKey']"></div>
+            <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey='@ViewData["ReCaptchaKey"]'></div>
             <button type="submit" id="lmsRegisterButton" class="btn btn-primary" disabled>Register</button>
         </form>
     </div>
