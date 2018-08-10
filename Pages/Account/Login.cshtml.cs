@@ -52,6 +52,11 @@ namespace lmsextreg.Pages.Account
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; } = false;
+
+            [BindProperty]
+            [Display(Name = "I agree to these Rules of Behavior")]
+            [Range(typeof(bool), "true", "true", ErrorMessage = "Rules of Behavior must be agreed to in order to log in.")]
+            public bool RulesOfBehaviorAgreedTo { get; set; }             
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -108,7 +113,7 @@ namespace lmsextreg.Pages.Account
                 // Console.WriteLine("Input.Password: " + Input.Password);
                 // Console.WriteLine("Input.RememberMe: " + Input.RememberMe);                
 
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, false, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -126,7 +131,7 @@ namespace lmsextreg.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = false });
                 }
                 if (result.IsLockedOut)
                 {
